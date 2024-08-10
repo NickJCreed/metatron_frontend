@@ -1,0 +1,45 @@
+/* index.css */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+.bg-darkBg {
+  background-color: #0e0e10;
+}
+.bg-lightBg {
+  background-color: #1c1c24;
+}
+.text-white {
+  color: #ffffff;
+}
+.p-4 {
+  padding: 1rem;
+}
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+.flex-1 {
+  flex: 1;
+}
+.mt-4 {
+  margin-top: 1rem;
+}
+.image-container {
+    padding-top: 10px; /* Adjust the value to increase or decrease the space */
+  }
+  
+.image-wrapper {
+height: 148px; /* Reduced height to accommodate the padding */
+overflow: hidden;
+border-radius: 15px 15px 0 0;
+}
+
+.image {
+width: 100%;
+height: 100%;
+object-fit: cover; /* Ensure the image covers the entire container */
+}
