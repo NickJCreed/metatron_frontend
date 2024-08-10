@@ -34,3 +34,4 @@ Clone the repository and install the dependencies:
 git clone https://github.com/metatron-dao/frontend.git
 cd frontend
 npm install
+npm run dev
