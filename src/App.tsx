@@ -1,18 +1,19 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Sidebar from "@/components/Nav/Sidebar"; // Adjust the import path as necessary
-import Gallery from "@/components/Gallery"; // Adjust the import path as necessary
-import NFTPage from "@/pages/nft/$id"; // Adjust the import path as necessary
-import { Header } from "@/components/Nav/Header"; // Adjust the import path as necessary
+import { Routes, Route } from "react-router-dom";
+import Sidebar from "@/components/Nav/Sidebar";
+import Gallery from "@/components/Gallery";
+import NFTPage from "@/pages/nft/$id";
+import InvestorProfilePage from "@/pages/investor/$id";
+import { Header } from "@/components/Nav/Header";
 import { useActiveAccount } from "thirdweb/react";
 import { balanceOf } from "thirdweb/extensions/erc721";
-import { accessContract, startupContract, investorContract, connectorContract } from "@/consts/parameters"; // Adjust the import path as necessary
-import { minimumBalance } from "@/consts/yourDetails"; // Adjust the import path as necessary
+import { accessContract, startupContract, investorContract, connectorContract } from "@/consts/parameters";
+import { minimumBalance } from "@/consts/yourDetails";
 
 const ContractContext = createContext({ contract: startupContract, setContract: (contract: any) => {} });
 const AuthContext = createContext({ isAuthorized: false });
 
-const Layout: React.FC = ({ children }) => {
+const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen bg-darkBg text-white">
       <Header />
@@ -24,12 +25,12 @@ const Layout: React.FC = ({ children }) => {
   );
 };
 
-const App = () => {
+const App: React.FC = () => {
   const [contract, setContract] = useState(startupContract);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const activeAccount = useActiveAccount();
   const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState<number>(0); // Initialize totalCount
+  const [totalCount, setTotalCount] = useState<number>(0);
   const nftsPerPage = 10;
 
   const checkUserBalance = async () => {
@@ -61,49 +62,51 @@ const App = () => {
   return (
     <ContractContext.Provider value={{ contract, setContract }}>
       <AuthContext.Provider value={{ isAuthorized }}>
-        <Router>
-          <Layout>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <Gallery
-                    contract={startupContract}
-                    page={page}
-                    setPage={setPage}
-                    nftsPerPage={nftsPerPage}
-                    setTotalCount={setTotalCount} // Pass setTotalCount
-                  />
-                }
-              />
-              <Route
-                path="/investors"
-                element={
-                  <Gallery
-                    contract={investorContract}
-                    page={page}
-                    setPage={setPage}
-                    nftsPerPage={nftsPerPage}
-                    setTotalCount={setTotalCount} // Pass setTotalCount
-                  />
-                }
-              />
-              <Route
-                path="/connectors"
-                element={
-                  <Gallery
-                    contract={connectorContract}
-                    page={page}
-                    setPage={setPage}
-                    nftsPerPage={nftsPerPage}
-                    setTotalCount={setTotalCount} // Pass setTotalCount
-                  />
-                }
-              />
-              <Route path="/nft/:id" element={<NFTPage />} />
-            </Routes>
-          </Layout>
-        </Router>
+        <Layout>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Gallery
+                  contract={startupContract}
+                  page={page}
+                  setPage={setPage}
+                  nftsPerPage={nftsPerPage}
+                  setTotalCount={setTotalCount}
+                  type="startup"
+                />
+              }
+            />
+            <Route
+              path="/investors"
+              element={
+                <Gallery
+                  contract={investorContract}
+                  page={page}
+                  setPage={setPage}
+                  nftsPerPage={nftsPerPage}
+                  setTotalCount={setTotalCount}
+                  type="investor"
+                />
+              }
+            />
+            <Route
+              path="/connectors"
+              element={
+                <Gallery
+                  contract={connectorContract}
+                  page={page}
+                  setPage={setPage}
+                  nftsPerPage={nftsPerPage}
+                  setTotalCount={setTotalCount}
+                  type="connector"
+                />
+              }
+            />
+            <Route path="/nft/:id" element={<NFTPage />} />
+            <Route path="/investor/:id" element={<InvestorProfilePage />} />
+          </Routes>
+        </Layout>
       </AuthContext.Provider>
     </ContractContext.Provider>
   );

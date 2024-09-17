@@ -28,7 +28,7 @@ export const investorContract = getContract({
   address: import.meta.env.VITE_INVESTOR_CONTRACT_ADDRESS,
   // The chain object of the chain your contract is deployed to.
   // If that chain isn't in the default list of our SDK, use `defineChain` - for example: defineChain(666666)
-  chain: ethereum,
+  chain: sepolia,
   client,
 });
 
@@ -37,7 +37,7 @@ export const connectorContract = getContract({
   address: import.meta.env.VITE_CONNECTOR_CONTRACT_ADDRESS,
   // The chain object of the chain your contract is deployed to.
   // If that chain isn't in the default list of our SDK, use `defineChain` - for example: defineChain(666666)
-  chain: ethereum,
+  chain: sepolia,
   client,
 });
 
@@ -84,9 +84,9 @@ export const navlinks = [
     link: '/connectors',
   },
   {
-    name: 'vault',
+    name: 'vote',
     imgUrl: withdraw,
-    link: '/vault',
+    link: '/vote',
   },
   {
     name: 'profile',

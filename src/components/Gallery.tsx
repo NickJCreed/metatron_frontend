@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { NFTCard } from "@/components/NFTCard";
+import { InvestorCard } from "@/components/InvestorCard"; // Import the investor card
 import useDebounce from "@/hooks/useDebounce";
 import { SearchIcon } from "@/icons/SearchIcon";
 import { Helmet } from "react-helmet";
@@ -7,7 +9,14 @@ import { NFT } from "thirdweb";
 import { getContractMetadata } from "thirdweb/extensions/common";
 import { getNFT, getNFTs, totalSupply } from "thirdweb/extensions/erc721";
 import { useReadContract } from "thirdweb/react";
-import { Footer } from "@/components/Nav/Footer"; // Adjust the import path as necessary
+import { Footer } from "@/components/Nav/Footer"; 
+
+// Component mapping
+const componentMap: { [key: string]: React.FC<any> } = {
+  startup: NFTCard,
+  investor: InvestorCard,
+  // Add connector and other mappings here
+};
 
 interface GalleryProps {
   contract: any;
@@ -15,9 +24,13 @@ interface GalleryProps {
   setPage: (page: number) => void;
   nftsPerPage: number;
   setTotalCount: (count: number) => void;
+  type: "startup" | "investor" | "connector"; // New prop to determine card type
 }
 
-const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage, setTotalCount }) => {
+const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage, setTotalCount, type }) => {
+  // Add this line to log the current contract address
+  console.log("Current Contract Address:", contract);
+
   const [search, setSearch] = useState<string>("");
   const debouncedSearchTerm = useDebounce(search, 500);
 
@@ -29,13 +42,16 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
     count: count,
     start: start,
   });
+
   const { data: totalCount, refetch: refetchTotalCount } = useReadContract(totalSupply, {
     contract: contract,
   });
+
   const { data: contractMetadata, isLoading: contractLoading, refetch: refetchContractMetadata } =
     useReadContract(getContractMetadata, {
       contract: contract,
     });
+
   const [nft, setNft] = useState<NFT | null>(null);
   const [isSearching, setIsSearching] = useState(false);
 
@@ -73,23 +89,40 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
     refetchContractMetadata();
   }, [contract, page, refetchNFTs, refetchTotalCount, refetchContractMetadata]);
 
-  // Function to map NFT metadata to NFTCard props
   const mapNFTToProps = (nft: NFT) => {
-    const startupName = nft.metadata.name || "Unknown Startup";
-    const fundingStage = nft.metadata.attributes?.find((attr) => attr.trait_type === "Funding Range")?.value || "Unknown";
-    const fundingSeeked = "Some Value"; // You may need additional logic here
-    const location = nft.metadata.attributes?.find((attr) => attr.trait_type === "Location")?.value || "Unknown Location";
-    const category = nft.metadata.attributes?.find((attr) => attr.trait_type === "Industry")?.value || "Technology";
+    if (type === "startup") {
+      const startupName = nft.metadata.name || "Unknown Startup";
+      const fundingStage = nft.metadata.attributes?.find((attr) => attr.trait_type === "Funding Range")?.value || "Unknown";
+      const fundingSeeked = "Some Value";
+      const location = nft.metadata.attributes?.find((attr) => attr.trait_type === "Location")?.value || "Unknown Location";
+      const category = nft.metadata.attributes?.find((attr) => attr.trait_type === "Industry")?.value || "Technology";
 
-    return {
-      nft,
-      startupName,
-      fundingStage,
-      fundingSeeked,
-      location,
-      category,
-    };
+      return {
+        nft,
+        startupName,
+        fundingStage,
+        fundingSeeked,
+        location,
+        category,
+      };
+    } else if (type === "investor") {
+        const investorName = nft.metadata.name || "Unknown Investor";
+        const hq = nft.metadata.attributes?.find((attr) => attr.trait_type === "Location")?.value || "Unknown HQ";
+        const investmentStage = nft.metadata.attributes?.find((attr) => attr.trait_type === "Funding Range")?.value || "Unknown Stage";
+        const fundType = nft.metadata.attributes?.find((attr) => attr.trait_type === "Funding Types")?.value || "Unknown Fund Type";
+        
+        return {
+          nft,
+          investorName, // Pass investor name directly
+          hq,              // Pass HQ directly
+          investmentStage, // Pass investment stage directly
+          fundType,        // Pass fund type directly
+        };
+      }
+    // Other mappings for different types
   };
+
+  const CardComponent = componentMap[type]; // Get the appropriate card component
 
   return (
     <div className="m-0 bg-[#0A0A0A] p-0 font-inter text-neutral-200">
@@ -128,7 +161,7 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
                 setSearch("");
               }
             }}
-            placeholder="Search by Token ID"
+            placeholder="Search by project name"
             className="w-full bg-transparent px-4 text-white focus:outline-none"
           />
         </div>
@@ -138,7 +171,7 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
         ) : null}
 
         {search && nft && !isSearching ? (
-          <NFTCard {...mapNFTToProps(nft)} key={nft.id.toString()} />
+          <CardComponent {...mapNFTToProps(nft)} key={nft.id.toString()} />
         ) : null}
 
         {isLoading && (
@@ -155,7 +188,7 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
         {nfts && !search && (
           <div className="flex flex-wrap items-center justify-center gap-8">
             {nfts.map((nft) => (
-              <NFTCard {...mapNFTToProps(nft)} key={nft.id.toString()} />
+              <CardComponent {...mapNFTToProps(nft)} key={nft.id.toString()} />
             ))}
           </div>
         )}

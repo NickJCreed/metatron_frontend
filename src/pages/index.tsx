@@ -90,7 +90,7 @@ function App() {
                 setSearch("");
               }
             }}
-            placeholder="Search by Token ID"
+            placeholder="Search by project name"
             className="w-full bg-transparent px-4 text-white focus:outline-none"
           />
         </div>
