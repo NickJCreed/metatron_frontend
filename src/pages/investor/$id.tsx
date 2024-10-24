@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
 import { client } from "@/consts/parameters";
 import { Helmet } from "react-helmet";

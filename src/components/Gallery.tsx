@@ -29,7 +29,7 @@ interface GalleryProps {
 
 const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage, setTotalCount, type }) => {
   // Add this line to log the current contract address
-  console.log("Current Contract Address:", contract);
+  // console.log("Current Contract Address:", contract);
 
   const [search, setSearch] = useState<string>("");
   const debouncedSearchTerm = useDebounce(search, 500);

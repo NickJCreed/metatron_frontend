@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import sun from '@/assets/sun.svg';
 import { navlinks } from '@/consts/parameters'; // Adjust import paths as needed
-import { useContract } from "@/App"; // Adjust the import path as necessary
+import { useContract } from "@/context/ContractProvider"; // Adjust the import path as necessary
 
 interface IconProps {
   styles?: string;

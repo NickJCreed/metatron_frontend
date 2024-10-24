@@ -13,7 +13,8 @@ import {
 
 import { getNFT, transferEvent } from "thirdweb/extensions/erc721";
 import { getContractMetadata } from "thirdweb/extensions/common";
-import { useContract, useAuth } from "@/App"; // Adjust the import path as necessary
+import { useAuth } from "@/context/AuthProvider"; 
+import { useContract } from "@/context/ContractProvider";
 
 const NFTPage = () => {
   const { id } = useParams();
