@@ -6,7 +6,7 @@ import { accessContract } from "@/consts/parameters";
 import useDebounce from "@/hooks/useDebounce";
 import { SearchIcon } from "@/icons/SearchIcon";
 import { useEffect, useState } from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { NFT } from "thirdweb";
 import { getContractMetadata } from "thirdweb/extensions/common";
 import { getNFT, getNFTs, totalSupply } from "thirdweb/extensions/erc721";

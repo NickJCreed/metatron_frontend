@@ -4,7 +4,7 @@ import { HistoryCard } from "@/components/HistoryCard";
 import { PoweredBy } from "@/components/PoweredBy";
 import { client } from "@/consts/parameters";
 import { truncateAddress } from "@/utils/truncateAddress";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import {
   MediaRenderer,
   useContractEvents,

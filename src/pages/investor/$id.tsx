@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
 import { client } from "@/consts/parameters";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { HistoryCard } from "@/components/HistoryCard";
 import { MediaRenderer, useReadContract, useContractEvents } from "thirdweb/react";
 import { getNFT, transferEvent } from "thirdweb/extensions/erc721";

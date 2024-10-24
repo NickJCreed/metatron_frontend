@@ -4,7 +4,7 @@ import { NFTCard } from "@/components/NFTCard";
 import { InvestorCard } from "@/components/InvestorCard"; // Import the investor card
 import useDebounce from "@/hooks/useDebounce";
 import { SearchIcon } from "@/icons/SearchIcon";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { NFT } from "thirdweb";
 import { getContractMetadata } from "thirdweb/extensions/common";
 import { getNFT, getNFTs, totalSupply } from "thirdweb/extensions/erc721";
