@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { useTheme } from "@/context/ThemeProvider"; 
 import { useNavigate } from 'react-router-dom';
-import sun from '@/assets/sun.svg';
-import { navlinks } from '@/consts/parameters'; // Adjust import paths as needed
-import { useContract } from "@/context/ContractProvider"; // Adjust the import path as necessary
+import sunIcon from '@/assets/sun.svg';
+import moonIcon from '@/assets/moon.svg'; 
+import { navlinks } from '@/consts/parameters'; 
+import { useContract } from "@/context/ContractProvider";
+import { darkTheme } from 'thirdweb/react';
 
 interface IconProps {
   styles?: string;
@@ -18,7 +21,7 @@ const Icon: React.FC<IconProps> = ({ styles, name, imgUrl, isActive, disabled, h
 
   return (
     <div
-      className={`relative w-[48px] h-[48px] rounded-[10px] ${isActive && isActive === name && 'bg-[#2c2f32]'} flex justify-center items-center ${!disabled && 'cursor-pointer'} ${styles}`}
+      className={`relative w-[48px] h-[48px] rounded-[10px] ${isActive && isActive === name } flex justify-center items-center ${!disabled && 'cursor-pointer'} ${styles}`}
       onClick={handleClick}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
@@ -36,7 +39,9 @@ const Icon: React.FC<IconProps> = ({ styles, name, imgUrl, isActive, disabled, h
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const { setContract } = useContract();
-  const [isActive, setIsActive] = useState('dashboard');
+  const { theme, toggleTheme } = useTheme(); 
+  console.log(theme.type);
+  const [isActive, setIsActive] = useState("dashboard");
 
   const handleNavigation = (name: string, link: string, contract: string) => {
     setIsActive(name);
@@ -45,7 +50,10 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between bg-lightBg p-4 h-[93vh] rounded-[20px]">
+    <div
+      className="flex flex-col items-center justify-between p-4 m-3 h-[70vh] rounded-[20px]"
+      style={{ backgroundColor: theme.colors.tertiaryBg }}
+    >
       <div className="flex flex-col items-center gap-3">
         {navlinks.map((link) => (
           <Icon
@@ -62,7 +70,11 @@ const Sidebar: React.FC = () => {
           />
         ))}
       </div>
-      <Icon styles="bg-[#1c1c24] shadow-secondary" imgUrl={sun} />
+      <Icon
+        name="Toggle Theme"
+        imgUrl={theme.type === 'dark' ? sunIcon : moonIcon}
+        handleClick={toggleTheme} 
+      />
     </div>
   );
 };

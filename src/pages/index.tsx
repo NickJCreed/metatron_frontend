@@ -1,3 +1,4 @@
+import { useTheme } from "@/context/ThemeProvider"; 
 import { Footer } from "@/components/Nav/Footer";
 import { Header } from "@/components/Nav/Header";
 import Sidebar from "@/components/Nav/Sidebar";
@@ -14,6 +15,7 @@ import { useReadContract } from "thirdweb/react";
 
 
 function App() {
+  const { theme } = useTheme();
   const nftsPerPage = 30;
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState<string>("");
@@ -52,7 +54,10 @@ function App() {
   }, [debouncedSearchTerm]);
 
   return (
-    <div className="m-0 bg-[#0A0A0A] p-0 font-inter text-neutral-200">
+    <div 
+      className="m-0 p-0 font-inter text-neutral-200"
+      // style={{ backgroundColor: theme.colors.accentButtonBg }}
+      >
       <Header />
 
       <Helmet>

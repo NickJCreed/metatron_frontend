@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTheme } from "@/context/ThemeProvider";
 import { useLocation } from "react-router-dom";
 import { NFTCard } from "@/components/NFTCard";
 import { InvestorCard } from "@/components/InvestorCard"; // Import the investor card
@@ -10,7 +11,7 @@ import { getContractMetadata } from "thirdweb/extensions/common";
 import { getNFT, getNFTs, totalSupply } from "thirdweb/extensions/erc721";
 import { useReadContract } from "thirdweb/react";
 import { Footer } from "@/components/Nav/Footer"; 
-import { NFTAttribute } from "@/types";
+import { NFTAttribute } from "@/types/nftTypes";
 
 // Component mapping
 const componentMap: { [key: string]: React.FC<any> } = {
@@ -31,7 +32,7 @@ interface GalleryProps {
 const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage, setTotalCount, type }) => {
   // Add this line to log the current contract address
   // console.log("Current Contract Address:", contract);
-
+  const { theme } = useTheme(); 
   const [search, setSearch] = useState<string>("");
   const debouncedSearchTerm = useDebounce(search, 500);
 
@@ -126,7 +127,10 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
   const CardComponent = componentMap[type]; // Get the appropriate card component
 
   return (
-    <div className="m-0 bg-[#0A0A0A] p-0 font-inter text-neutral-200">
+    <div 
+      className="m-0 p-7 font-inter text-neutral-200" 
+      style={{ backgroundColor: theme.colors.secondaryBg }}
+      >
       <Helmet>
         <title>{contractMetadata?.name}</title>
       </Helmet>
@@ -134,10 +138,16 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
       <div className="z-20 mx-auto flex min-h-screen w-full flex-col px-4">
         {contractMetadata ? (
           <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold text-white">
+            <h1 
+              className="text-4xl font-bold"
+              style={{color: theme.colors.primaryText}}
+              >
               {contractMetadata.name}
             </h1>
-            <h2 className="text-xl font-bold text-white">
+            <h2 
+              className="text-xl font-bold"
+              style={{color: theme.colors.primaryText}}
+              >
               {contractMetadata.description}
             </h2>
           </div>
@@ -148,10 +158,17 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
           </div>
         ) : null}
 
-        <div className="mx-auto mb-8 flex h-12 w-96 max-w-full items-center rounded-lg border border-white/10 bg-white/5 px-4 text-xl text-white">
+        <div 
+          className="mx-auto mb-8 flex h-12 w-96 max-w-full items-center rounded-lg border px-4 text-xl"
+          style={{
+            backgroundColor: theme.colors.secondaryBg,
+            color: theme.colors.primaryText,
+            borderColor: theme.colors.borderColor,
+          }}
+          >
           <SearchIcon />
           <input
-            type="number"
+            type="string"
             onChange={(e) => {
               if (
                 e.target.value.match(/^[0-9]*$/) &&

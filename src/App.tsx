@@ -9,6 +9,7 @@ import NFTPage from "@/pages/nft/$id";
 import InvestorProfilePage from "@/pages/investor/$id";
 import { usePagination } from "@/hooks/usePagination";
 import { startupContract, investorContract, connectorContract } from "@/consts/parameters";
+import { ThemeProvider } from "./context/ThemeProvider";
 
 const App: React.FC = () => {
   const { page, setPage, totalCount, setTotalCount, itemsPerPage } = usePagination();
@@ -17,51 +18,53 @@ const App: React.FC = () => {
     <HelmetProvider>
       <ContractProvider>
         <AuthProvider>
-          <Layout>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <Gallery
-                    contract={startupContract}
-                    page={page}
-                    setPage={setPage}
-                    nftsPerPage={itemsPerPage}
-                    setTotalCount={setTotalCount}
-                    type="startup"
-                  />
-                }
-              />
-              <Route
-                path="/investors"
-                element={
-                  <Gallery
-                    contract={investorContract}
-                    page={page}
-                    setPage={setPage}
-                    nftsPerPage={itemsPerPage}
-                    setTotalCount={setTotalCount}
-                    type="investor"
-                  />
-                }
-              />
-              <Route
-                path="/connectors"
-                element={
-                  <Gallery
-                    contract={connectorContract}
-                    page={page}
-                    setPage={setPage}
-                    nftsPerPage={itemsPerPage}
-                    setTotalCount={setTotalCount}
-                    type="connector"
-                  />
-                }
-              />
-              <Route path="/nft/:id" element={<NFTPage />} />
-              <Route path="/investor/:id" element={<InvestorProfilePage />} />
-            </Routes>
-          </Layout>
+          <ThemeProvider>
+            <Layout>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <Gallery
+                      contract={startupContract}
+                      page={page}
+                      setPage={setPage}
+                      nftsPerPage={itemsPerPage}
+                      setTotalCount={setTotalCount}
+                      type="startup"
+                    />
+                  }
+                />
+                <Route
+                  path="/investors"
+                  element={
+                    <Gallery
+                      contract={investorContract}
+                      page={page}
+                      setPage={setPage}
+                      nftsPerPage={itemsPerPage}
+                      setTotalCount={setTotalCount}
+                      type="investor"
+                    />
+                  }
+                />
+                <Route
+                  path="/connectors"
+                  element={
+                    <Gallery
+                      contract={connectorContract}
+                      page={page}
+                      setPage={setPage}
+                      nftsPerPage={itemsPerPage}
+                      setTotalCount={setTotalCount}
+                      type="connector"
+                    />
+                  }
+                />
+                <Route path="/nft/:id" element={<NFTPage />} />
+                <Route path="/investor/:id" element={<InvestorProfilePage />} />
+              </Routes>
+            </Layout>
+          </ThemeProvider>
         </AuthProvider>
       </ContractProvider>
     </HelmetProvider>

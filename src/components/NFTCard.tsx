@@ -1,4 +1,5 @@
 import { client } from "@/consts/parameters";
+import { useTheme } from "@/context/ThemeProvider"; 
 import { FC, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { NFT } from 'thirdweb';
@@ -25,6 +26,7 @@ const categoryIcons: { [key: string]: JSX.Element } = {
 };
 
 export const NFTCard: FC<INFTCardProps> = ({ nft, startupName, fundingStage, location, category }) => {
+  const { theme } = useTheme();
   const [hover, setHover] = useState<boolean>(false);
   const [favorite, setFavorite] = useState<boolean>(false);
 
@@ -36,10 +38,10 @@ export const NFTCard: FC<INFTCardProps> = ({ nft, startupName, fundingStage, loc
   return (
     <Link to={`/nft/${nft.id.toString()}`}>
       <div
-        className="sm:w-[288px] w-full rounded-[15px] bg-[#1c1c24] cursor-pointer transition-all duration-300 hover:scale-105 relative p-2 box-border"
+        className="sm:w-[288px] w-full rounded-[15px] cursor-pointer transition-all duration-300 hover:scale-105 relative p-2 box-border"
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
-        style={{ height: '360px' }}  // Reduced the height slightly
+        style={{ height: '360px', backgroundColor: theme.colors.modalBg }}  // Reduced the height slightly
       >
         {/* Image container taking up 60% of the card's height */}
         <div className="image-container" style={{ height: '60%', padding: '5px', backgroundColor: '#1c1c24', borderRadius: '5px' }}>
