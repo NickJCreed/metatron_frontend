@@ -1,5 +1,5 @@
 import { client } from "@/consts/parameters";
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { NFT } from 'thirdweb';
 import { MediaRenderer } from 'thirdweb/react';
@@ -8,10 +8,10 @@ import { FaHandsHelping, FaChartLine, FaSeedling, FaTree, FaMoneyBill, FaLaptopC
 
 interface INFTCardProps {
   nft: NFT;
-  startupName: string;
-  fundingStage: string;
-  location: string;
-  category: string;
+  startupName?: string;
+  fundingStage?: string;
+  location?: string;
+  category?: string;
 }
 
 const categoryIcons: { [key: string]: JSX.Element } = {
@@ -63,7 +63,7 @@ export const NFTCard: FC<INFTCardProps> = ({ nft, startupName, fundingStage, loc
         
         <div className="p-3" style={{ height: '40%' }}> {/* Reduced padding and adjusted height */}
           <div className="flex flex-row items-center mb-[12px]"> {/* Reduced bottom margin */}
-            {categoryIcons[category] || <FaHandsHelping size={20} />} {/* Default to Service icon if category is unknown */}
+            {category ? categoryIcons[category] : <FaHandsHelping size={20} />} {/* Default to Service icon if category is unknown */}
             <p className="ml-[10px] font-epilogue font-medium text-[12px] text-[#808191]">{category}</p>
           </div>
           <h3 className="font-epilogue font-semibold text-[16px] text-white text-left leading-[24px] truncate">{startupName}</h3>

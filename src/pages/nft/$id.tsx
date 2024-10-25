@@ -1,9 +1,7 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { HistoryCard } from "@/components/HistoryCard";
-import { PoweredBy } from "@/components/PoweredBy";
 import { client } from "@/consts/parameters";
-import { truncateAddress } from "@/utils/truncateAddress";
 import { Helmet } from "react-helmet-async";
 import {
   MediaRenderer,
@@ -15,12 +13,14 @@ import { getNFT, transferEvent } from "thirdweb/extensions/erc721";
 import { getContractMetadata } from "thirdweb/extensions/common";
 import { useAuth } from "@/context/AuthProvider"; 
 import { useContract } from "@/context/ContractProvider";
+import { NFTAttribute } from "@/types/nftTypes";
 
 const NFTPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { contract } = useContract();
   const { isAuthorized } = useAuth();
+
   const { data: nft, isLoading, error } = useReadContract(getNFT, {
     contract: contract,
     tokenId: BigInt(id as string),
@@ -48,7 +48,7 @@ const NFTPage = () => {
   }, [error]);
 
   // Mapping the NFT attributes to specific props
-  const getAttributeValue = (attributes: any[], traitType: string) => {
+  const getAttributeValue = (attributes: NFTAttribute[], traitType: string) => {
     const attribute = attributes.find(
       (attr) => attr.trait_type === traitType
     );
@@ -174,7 +174,7 @@ const NFTPage = () => {
           </div>
 
           <div className="-mt-4 flex flex-col gap-4">
-            {nft?.metadata.attributes && (nft.metadata.attributes as any[]).length > 0 && (
+            {nft?.metadata.attributes && (nft.metadata.attributes as unknown as NFTAttribute[]).length > 0 && (
               <>
                 {isLoading ? (
                   <div className="mt-2 h-8 w-1/2 animate-pulse rounded-lg bg-gray-800" />
@@ -184,8 +184,8 @@ const NFTPage = () => {
                       Attributes
                     </p>
                     <div className="flex flex-wrap gap-4">
-                      {(nft.metadata.attributes as any[]).map(
-                        (attr: { trait_type: string; value: string | string[] }) => (
+                      {(nft.metadata.attributes as unknown as NFTAttribute[]).map(
+                        (attr: NFTAttribute) => (
                           <div
                             className="flex flex-col rounded-lg border border-gray-700 p-4"
                             key={attr.trait_type}

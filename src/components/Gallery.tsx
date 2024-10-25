@@ -10,6 +10,7 @@ import { getContractMetadata } from "thirdweb/extensions/common";
 import { getNFT, getNFTs, totalSupply } from "thirdweb/extensions/erc721";
 import { useReadContract } from "thirdweb/react";
 import { Footer } from "@/components/Nav/Footer"; 
+import { NFTAttribute } from "@/types";
 
 // Component mapping
 const componentMap: { [key: string]: React.FC<any> } = {
@@ -92,10 +93,10 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
   const mapNFTToProps = (nft: NFT) => {
     if (type === "startup") {
       const startupName = nft.metadata.name || "Unknown Startup";
-      const fundingStage = (nft.metadata.attributes as any[])?.find((attr) => attr.trait_type === "Funding Range")?.value || "Unknown";
+      const fundingStage = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Funding Range")?.value || "Unknown";
       const fundingSeeked = "Some Value";
-      const location = (nft.metadata.attributes as any[])?.find((attr) => attr.trait_type === "Location")?.value || "Unknown Location";
-      const category = (nft.metadata.attributes as any[])?.find((attr) => attr.trait_type === "Industry")?.value || "Technology";
+      const location = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Location")?.value || "Unknown Location";
+      const category = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Industry")?.value || "Technology";
 
       return {
         nft,
@@ -107,9 +108,9 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
       };
     } else if (type === "investor") {
         const investorName = nft.metadata.name || "Unknown Investor";
-        const hq = (nft.metadata.attributes as any[])?.find((attr) => attr.trait_type === "Location")?.value || "Unknown HQ";
-        const investmentStage = (nft.metadata.attributes as any[])?.find((attr) => attr.trait_type === "Funding Range")?.value || "Unknown Stage";
-        const fundType = (nft.metadata.attributes as any[])?.find((attr) => attr.trait_type === "Funding Types")?.value || "Unknown Fund Type";
+        const hq = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Location")?.value || "Unknown HQ";
+        const investmentStage = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Funding Range")?.value || "Unknown Stage";
+        const fundType = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Funding Types")?.value || "Unknown Fund Type";
         
         return {
           nft,
