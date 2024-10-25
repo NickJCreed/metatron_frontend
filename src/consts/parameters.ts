@@ -5,7 +5,7 @@ import {
   walletConnect,
   inAppWallet,
 } from "thirdweb/wallets";
-import { createCampaign, dashboard, logout, payment, profile, withdraw } from '../assets';
+import { createCampaign, dashboard, logout, payment, profile, withdraw } from "@/assets";
 
 /** Change these values to configure the application for your own use. **/
 
