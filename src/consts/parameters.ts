@@ -73,42 +73,42 @@ export const navlinks = [
     imgUrl: dashboard,
     link: '/',
     disabled: false,
-    contract: 'startups'
+    contract: startupContract,
   },
   {
     name: 'investors',
     imgUrl: createCampaign,
     link: '/investors',
     disabled: false,
-    contract: 'investors'
+    contract: investorContract,
   },
   {
     name: 'connectors',
     imgUrl: payment,
     link: '/connectors',
     disabled: false,
-    contract: 'connectors'
+    contract: connectorContract,
   },
   {
     name: 'vote',
     imgUrl: withdraw,
     link: '/vote',
     disabled: false,
-    contract: 'vote'
+    contract: accessContract,
   },
   {
     name: 'profile',
     imgUrl: profile,
     link: '/profile',
     disabled: false,
-    contract: 'profile'
+    contract: accessContract,
   },
   {
     name: 'logout',
     imgUrl: logout,
     link: '/logout',
     disabled: false,
-    contract: 'logout' // todo check what would be more suitable
+    contract: accessContract, // todo check what would be more suitable
   },
 ];
 
