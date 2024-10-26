@@ -1,4 +1,5 @@
 import useDebounce from "@/hooks/useDebounce";
+import { useTheme } from "@/context/ThemeProvider";
 import { FC, useEffect, useState } from "react";
 
 interface IProps {
@@ -17,6 +18,7 @@ const PaginationHelper: FC<IProps> = ({
   const [isSearching, setIsSearching] = useState(false);
   const [pageInput, setPageInput] = useState<number>(page);
   const debouncedSearchTerm = useDebounce(String(pageInput), 500);
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (debouncedSearchTerm) {
@@ -38,11 +40,24 @@ const PaginationHelper: FC<IProps> = ({
   return (
     <div className="flex items-center gap-2 md:ml-auto">
       {isSearching || loading ? (
-        <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-white/50"></div>
+        <div 
+          className="h-6 w-6 animate-spin rounded-full border-b-2"
+          style={{ 
+            backgroundColor: theme.colors.secondaryBg,
+            color: theme.colors.primaryText,
+            borderColor: theme.colors.borderColor
+          }}
+          >
+        </div>
       ) : (
         <>
           <button
-            className="rounded-lg bg-white/5 px-4 py-2 text-white shadow-2xl disabled:opacity-50"
+            className="rounded-lg px-4 py-2 shadow-2xl disabled:opacity-50"
+            style={{
+              backgroundColor: theme.colors.secondaryBg,
+              color: theme.colors.primaryText,
+              borderColor: theme.colors.borderColor,
+            }}
             onClick={() => setPage(page - 1)}
             disabled={page === 1}
           >
@@ -51,7 +66,7 @@ const PaginationHelper: FC<IProps> = ({
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
-              stroke="currentColor"
+              stroke={theme.colors.primaryText}
               className="h-6 w-6"
             >
               <path
@@ -63,14 +78,24 @@ const PaginationHelper: FC<IProps> = ({
           </button>
           <input
             type="number"
-            className="w-16 rounded-lg bg-white/5 p-2 text-white shadow-2xl focus:border-0 focus:outline-none focus:ring-0 active:border-0 active:outline-none active:ring-0"
+            className="w-16 rounded-lg p-2 shadow-2xl focus:border-0 focus:outline-none focus:ring-0 active:border-0 active:outline-none active:ring-0"
+            style={{
+              backgroundColor: theme.colors.secondaryBg,
+              color: theme.colors.primaryText,
+              borderColor: theme.colors.borderColor,
+            }}
             onChange={(e) => setPageInput(Number(e.target.value))}
             value={pageInput}
             min={1}
             max={noOfPages}
           />
           <button
-            className="rounded-lg bg-white/5 px-4 py-2 text-white shadow-2xl"
+            className="rounded-lg px-4 py-2 shadow-2xl"
+            style={{ 
+              backgroundColor: theme.colors.secondaryBg,
+              color: theme.colors.primaryText,
+              borderColor: theme.colors.borderColor
+            }}
             onClick={() => setPage(page + 1)}
             disabled={page === noOfPages}
           >
@@ -79,7 +104,7 @@ const PaginationHelper: FC<IProps> = ({
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
-              stroke="currentColor"
+              stroke={theme.colors.primaryText}
               className="h-6 w-6"
             >
               <path

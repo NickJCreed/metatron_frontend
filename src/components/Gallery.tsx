@@ -131,7 +131,10 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
             type="text"
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by project name"
-            className="w-full bg-transparent px-4 text-white focus:outline-none"
+            className="w-full bg-transparent px-4 focus:outline-none"
+            style={{
+              color: theme.colors.primaryText,
+            }}
           />
         </div>
 
