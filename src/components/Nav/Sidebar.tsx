@@ -40,7 +40,6 @@ const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const { setContract } = useContract();
   const { theme, toggleTheme } = useTheme(); 
-  console.log(theme.type);
   const [isActive, setIsActive] = useState("dashboard");
 
   const handleNavigation = (name: string, link: string, contract: string) => {
@@ -51,7 +50,7 @@ const Sidebar: React.FC = () => {
 
   return (
     <div
-      className="flex flex-col items-center justify-between p-4 m-3 h-[70vh] rounded-[20px]"
+      className="fixed top-[64px] left-0 z-10 flex flex-col items-center justify-between p-4 ml-4 mt-10 h-[70vh] rounded-[20px]"
       style={{ backgroundColor: theme.colors.tertiaryBg }}
     >
       <div className="flex flex-col items-center gap-3">

@@ -128,7 +128,7 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
 
   return (
     <div 
-      className="m-0 p-7 font-inter text-neutral-200" 
+      className="m-0 pt-20 font-inter text-neutral-200" 
       style={{ backgroundColor: theme.colors.secondaryBg }}
       >
       <Helmet>
@@ -137,7 +137,7 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
 
       <div className="z-20 mx-auto flex min-h-screen w-full flex-col px-4">
         {contractMetadata ? (
-          <div className="mb-8 text-center">
+          <div className="mb-8 mt-8 text-center">
             <h1 
               className="text-4xl font-bold"
               style={{color: theme.colors.primaryText}}

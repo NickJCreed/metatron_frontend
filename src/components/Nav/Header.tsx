@@ -18,7 +18,7 @@ export const Header: React.FC = () => {
 
   return (
     <header
-      className="flex items-center justify-between p-4"
+      className="fixed top-0 left-0 right-0 z-10 flex items-center justify-between p-4"
       style={{
         backgroundColor: theme.colors.secondaryButtonBg, 
         color: theme.colors.primaryText, 
