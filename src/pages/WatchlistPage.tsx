@@ -1,13 +1,17 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { ReactNode, createContext, useContext, useState } from "react";
 
 interface WatchlistContextProps {
   watchlist: any[];
   toggleFavorite: (item: any) => void;
 }
 
+interface WatchlistProviderProps {
+  children: ReactNode;
+}
+
 const WatchlistContext = createContext<WatchlistContextProps | undefined>(undefined);
 
-export const WatchlistProvider: React.FC = ({ children }) => {
+export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }) => {
   const [watchlist, setWatchlist] = useState<any[]>([]);
 
   const toggleFavorite = (item: any) => {

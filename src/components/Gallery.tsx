@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useTheme } from "@/context/ThemeProvider";
 import { NFTCard } from "@/components/NFTCard";
-import { InvestorCard } from "@/components/InvestorCard"; // Import the investor card
+import { InvestorCard } from "@/components/InvestorCard";
 import useDebounce from "@/hooks/useDebounce";
 import { SearchIcon } from "@/icons/SearchIcon";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { NFT } from "thirdweb";
 import { getContractMetadata } from "thirdweb/extensions/common";
-import { getNFT, getNFTs, totalSupply } from "thirdweb/extensions/erc721";
+import { getNFTs, totalSupply } from "thirdweb/extensions/erc721";
 import { useReadContract } from "thirdweb/react";
-import { Footer } from "@/components/Nav/Footer"; 
+import { Footer } from "@/components/Nav/Footer";
+import { NFTAttribute } from "@/types/nftTypes";
 
 // Component mapping
 const componentMap: { [key: string]: React.FC<any> } = {
   startup: NFTCard,
   investor: InvestorCard,
-  // Add connector and other mappings here
+  // Add connector and other mappings here if needed
 };
 
 interface GalleryProps {
@@ -24,15 +25,14 @@ interface GalleryProps {
   setPage: (page: number) => void;
   nftsPerPage: number;
   setTotalCount: (count: number) => void;
-  type: "startup" | "investor" | "connector"; // New prop to determine card type
+  type: "startup" | "investor" | "connector";
 }
 
 const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage, setTotalCount, type }) => {
-  // Add this line to log the current contract address
-  console.log("Current Contract Address:", contract);
-
+  const { theme } = useTheme();
   const [search, setSearch] = useState<string>("");
   const debouncedSearchTerm = useDebounce(search, 500);
+  const [filteredNFTs, setFilteredNFTs] = useState<NFT[]>([]);
 
   const start = BigInt((page - 1) * nftsPerPage);
   const count = BigInt(nftsPerPage);
@@ -52,32 +52,22 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
       contract: contract,
     });
 
-  const [nft, setNft] = useState<NFT | null>(null);
-  const [isSearching, setIsSearching] = useState(false);
-
   useEffect(() => {
     if (totalCount !== undefined) {
       setTotalCount(Number(totalCount));
     }
   }, [totalCount, setTotalCount]);
 
-  const fetchNFT = async () => {
-    const nft = await getNFT({
-      contract: contract,
-      tokenId: BigInt(debouncedSearchTerm),
-    });
-    setNft(nft!);
-    setIsSearching(false);
-  };
-
   useEffect(() => {
     if (debouncedSearchTerm) {
-      setIsSearching(true);
-      fetchNFT();
+      const filteredResults = nfts?.filter((nft: NFT) =>
+        nft.metadata.name?.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+      );
+      setFilteredNFTs(filteredResults || []);
     } else {
-      setNft(null);
+      setFilteredNFTs(nfts || []);
     }
-  }, [debouncedSearchTerm]);
+  }, [debouncedSearchTerm, nfts]);
 
   useEffect(() => {
     setPage(1); // Reset page when contract changes
@@ -92,53 +82,34 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
   const mapNFTToProps = (nft: NFT) => {
     if (type === "startup") {
       const startupName = nft.metadata.name || "Unknown Startup";
-      const fundingStage = (nft.metadata.attributes as any[])?.find((attr) => attr.trait_type === "Funding Range")?.value || "Unknown";
-      const fundingSeeked = "Some Value";
-      const location = (nft.metadata.attributes as any[])?.find((attr) => attr.trait_type === "Location")?.value || "Unknown Location";
-      const category = (nft.metadata.attributes as any[])?.find((attr) => attr.trait_type === "Industry")?.value || "Technology";
+      const fundingStage = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Funding Range")?.value || "Unknown";
+      const location = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Location")?.value || "Unknown Location";
+      const category = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Industry")?.value || "Technology";
 
-      return {
-        nft,
-        startupName,
-        fundingStage,
-        fundingSeeked,
-        location,
-        category,
-      };
+      return { nft, startupName, fundingStage, location, category };
     } else if (type === "investor") {
-        const investorName = nft.metadata.name || "Unknown Investor";
-        const hq = (nft.metadata.attributes as any[])?.find((attr) => attr.trait_type === "Location")?.value || "Unknown HQ";
-        const investmentStage = (nft.metadata.attributes as any[])?.find((attr) => attr.trait_type === "Funding Range")?.value || "Unknown Stage";
-        const fundType = (nft.metadata.attributes as any[])?.find((attr) => attr.trait_type === "Funding Types")?.value || "Unknown Fund Type";
-        
-        return {
-          nft,
-          investorName, // Pass investor name directly
-          hq,              // Pass HQ directly
-          investmentStage, // Pass investment stage directly
-          fundType,        // Pass fund type directly
-        };
-      }
-    // Other mappings for different types
+      const investorName = nft.metadata.name || "Unknown Investor";
+      const hq = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Location")?.value || "Unknown HQ";
+      const investmentStage = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Funding Range")?.value || "Unknown Stage";
+      const fundType = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Funding Types")?.value || "Unknown Fund Type";
+
+      return { nft, investorName, hq, investmentStage, fundType };
+    }
   };
 
-  const CardComponent = componentMap[type]; // Get the appropriate card component
+  const CardComponent = componentMap[type];
 
   return (
-    <div className="m-0 bg-[#0A0A0A] p-0 font-inter text-neutral-200">
+    <div className="m-0 pt-20 font-inter text-neutral-200" style={{ backgroundColor: theme.colors.secondaryBg }}>
       <Helmet>
         <title>{contractMetadata?.name}</title>
       </Helmet>
 
       <div className="z-20 mx-auto flex min-h-screen w-full flex-col px-4">
         {contractMetadata ? (
-          <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold text-white">
-              {contractMetadata.name}
-            </h1>
-            <h2 className="text-xl font-bold text-white">
-              {contractMetadata.description}
-            </h2>
+          <div className="mb-8 mt-8 text-center">
+            <h1 className="text-4xl font-bold" style={{ color: theme.colors.primaryText }}>{contractMetadata.name}</h1>
+            <h2 className="text-xl font-bold" style={{ color: theme.colors.primaryText }}>{contractMetadata.description}</h2>
           </div>
         ) : contractLoading ? (
           <div className="mx-auto mb-8 text-center">
@@ -147,58 +118,41 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
           </div>
         ) : null}
 
-        <div className="mx-auto mb-8 flex h-12 w-96 max-w-full items-center rounded-lg border border-white/10 bg-white/5 px-4 text-xl text-white">
+        <div
+          className="mx-auto mb-8 flex h-12 w-96 max-w-full items-center rounded-lg border px-4 text-xl"
+          style={{
+            backgroundColor: theme.colors.secondaryBg,
+            color: theme.colors.primaryText,
+            borderColor: theme.colors.borderColor,
+          }}
+        >
           <SearchIcon />
           <input
-            type="number"
-            onChange={(e) => {
-              if (
-                e.target.value.match(/^[0-9]*$/) &&
-                Number(e.target.value) > 0
-              ) {
-                setSearch(e.target.value);
-              } else {
-                setSearch("");
-              }
-            }}
+            type="text"
+            onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by project name"
-            className="w-full bg-transparent px-4 text-white focus:outline-none"
+            className="w-full bg-transparent px-4 focus:outline-none"
+            style={{
+              color: theme.colors.primaryText,
+            }}
           />
         </div>
 
-        {isSearching ? (
-          <div className="mx-auto !h-60 !w-60 animate-pulse rounded-lg bg-gray-800" />
-        ) : null}
-
-        {search && nft && !isSearching ? (
-          <CardComponent {...mapNFTToProps(nft)} key={nft.id.toString()} />
-        ) : null}
-
-        {isLoading && (
+        {isLoading ? (
           <div className="mx-auto flex flex-wrap items-center justify-center gap-8">
             {Array.from({ length: nftsPerPage }).map((_, i) => (
-              <div
-                className="!h-60 !w-60 animate-pulse rounded-lg bg-gray-800"
-                key={i}
-              />
+              <div className="!h-60 !w-60 animate-pulse rounded-lg bg-gray-800" key={i} />
             ))}
           </div>
-        )}
-
-        {nfts && !search && (
+        ) : (
           <div className="flex flex-wrap items-center justify-center gap-8">
-            {nfts.map((nft) => (
+            {filteredNFTs.map((nft) => (
               <CardComponent {...mapNFTToProps(nft)} key={nft.id.toString()} />
             ))}
           </div>
         )}
-        <Footer
-          page={page}
-          setPage={setPage}
-          nftsPerPage={nftsPerPage}
-          totalCount={Number(totalCount)}
-          loading={isLoading}
-        />
+
+        <Footer page={page} setPage={setPage} nftsPerPage={nftsPerPage} totalCount={Number(totalCount)} loading={isLoading} />
       </div>
     </div>
   );

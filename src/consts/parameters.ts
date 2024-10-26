@@ -5,7 +5,7 @@ import {
   walletConnect,
   inAppWallet,
 } from "thirdweb/wallets";
-import { createCampaign, dashboard, logout, payment, profile, withdraw } from '../assets';
+import { createCampaign, dashboard, logout, payment, profile, withdraw } from "@/assets";
 
 /** Change these values to configure the application for your own use. **/
 
@@ -14,7 +14,8 @@ export const client = createThirdwebClient({
   secretKey: import.meta.env.PRIVATE_KEY,
 });
 
-export const startupContract = getContract({
+// Use ReturnType to extract the type directly
+export const startupContract: ReturnType<typeof getContract> = getContract({
   // Your smart contract address (available on the thirdweb dashboard)
   address: import.meta.env.VITE_STARTUP_CONTRACT_ADDRESS,
   // The chain object of the chain your contract is deployed to.
@@ -23,7 +24,7 @@ export const startupContract = getContract({
   client,
 });
 
-export const investorContract = getContract({
+export const investorContract: ReturnType<typeof getContract> = getContract({
   // Your smart contract address (available on the thirdweb dashboard)
   address: import.meta.env.VITE_INVESTOR_CONTRACT_ADDRESS,
   // The chain object of the chain your contract is deployed to.
@@ -32,7 +33,7 @@ export const investorContract = getContract({
   client,
 });
 
-export const connectorContract = getContract({
+export const connectorContract: ReturnType<typeof getContract> = getContract({
   // Your smart contract address (available on the thirdweb dashboard)
   address: import.meta.env.VITE_CONNECTOR_CONTRACT_ADDRESS,
   // The chain object of the chain your contract is deployed to.
@@ -41,7 +42,7 @@ export const connectorContract = getContract({
   client,
 });
 
-export const accessContract = getContract({
+export const accessContract: ReturnType<typeof getContract> = getContract({
   // Your smart contract address (available on the thirdweb dashboard)
   address: import.meta.env.VITE_ACCESS_CONTRACT_ADDRESS,
   // The chain object of the chain your contract is deployed to.
@@ -72,31 +73,43 @@ export const navlinks = [
     name: 'startups',
     imgUrl: dashboard,
     link: '/',
+    disabled: false, // todo implement logic later on according to access conditions
+    contract: startupContract as any, // todo check what would be more suitable for each navlink
   },
   {
     name: 'investors',
     imgUrl: createCampaign,
     link: '/investors',
+    disabled: false,
+    contract: investorContract,
   },
   {
     name: 'connectors',
     imgUrl: payment,
     link: '/connectors',
+    disabled: false,
+    contract: connectorContract,
   },
   {
     name: 'vote',
     imgUrl: withdraw,
     link: '/vote',
+    disabled: false,
+    contract: accessContract,
   },
   {
     name: 'profile',
     imgUrl: profile,
     link: '/profile',
+    disabled: false,
+    contract: accessContract,
   },
   {
     name: 'logout',
     imgUrl: logout,
     link: '/logout',
+    disabled: false,
+    contract: accessContract, 
   },
 ];
 

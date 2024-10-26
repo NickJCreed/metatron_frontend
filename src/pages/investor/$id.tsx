@@ -1,16 +1,18 @@
-import React, { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
+import { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom"; 
 import { client } from "@/consts/parameters";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { HistoryCard } from "@/components/HistoryCard";
 import { MediaRenderer, useReadContract, useContractEvents } from "thirdweb/react";
+import { NFTAttribute } from "@/types/nftTypes";
 import { getNFT, transferEvent } from "thirdweb/extensions/erc721";
 import { getContractMetadata } from "thirdweb/extensions/common";
-import { investorContract } from "@/consts/parameters"; // Import the investor contract
+import { investorContract } from "@/consts/parameters";
 
 const InvestorProfilePage = () => {
   const { id } = useParams();
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate(); 
+  
   const { data: nft, isLoading, error } = useReadContract(getNFT, {
     contract: investorContract,
     tokenId: BigInt(id as string),
@@ -39,10 +41,12 @@ const InvestorProfilePage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const getAttributeValue = (traitType: string) => {
-    const attribute = nft?.metadata.attributes?.find(attr => attr.trait_type === traitType);
-    return attribute ? attribute.value : "Unknown";
+  // Access attributes directly as defined by the thirdweb NFT type
+  const getAttributeValue = (attributes: NFTAttribute[], traitType: string): string => {
+    const attribute = attributes.find((attr) => attr.trait_type === traitType);
+    return attribute ? String(attribute.value) : "Unknown";
   };
+  
 
   return (
     <div className="m-0 min-h-screen bg-[#0A0A0A] p-0 font-inter text-neutral-200">
@@ -54,19 +58,19 @@ const InvestorProfilePage = () => {
         <div className="flex flex-col px-10 md:min-h-screen md:w-1/2">
           <div className="mb-4 flex space-x-4">
             <button
-              onClick={() => navigate(-1)} // Navigate back to the previous page
+              onClick={() => navigate(-1)}
               className="text-white bg-[#20c474] hover:bg-[#a8d8c1] font-bold py-2 px-4 rounded-full"
             >
               Back
             </button>
             <button
-              onClick={() => navigate(`/investor/${Number(id) - 1}`)} // Navigate to the previous investor
+              onClick={() => navigate(`/investor/${Number(id) - 1}`)}
               className="text-white bg-[#347854] hover:bg-[#2e6a4a] font-bold py-2 px-4 rounded-full"
             >
               &larr;
             </button>
             <button
-              onClick={() => navigate(`/investor/${Number(id) + 1}`)} // Navigate to the next investor
+              onClick={() => navigate(`/investor/${Number(id) + 1}`)}
               className="text-white bg-[#347854] hover:bg-[#2e6a4a] font-bold py-2 px-4 rounded-full"
             >
               &rarr;
@@ -75,7 +79,7 @@ const InvestorProfilePage = () => {
           {nft ? (
             <MediaRenderer
               client={client}
-              src={nft?.metadata.image}
+              src={nft.metadata.image}
               className="!md:h-96 !md:w-96 !h-full !max-h-[600px] !w-full !max-w-[600px] !rounded-lg !object-cover"
             />
           ) : (
@@ -84,7 +88,7 @@ const InvestorProfilePage = () => {
             )
           )}
 
-          {eventsData && eventsData?.length > 0 ? (
+          {eventsData && eventsData.length > 0 ? (
             <p className="mt-8 hidden text-lg font-semibold uppercase text-[#646D7A] md:flex">
               History
             </p>
@@ -133,7 +137,7 @@ const InvestorProfilePage = () => {
 
             {nft?.metadata.name ? (
               <p className="text-3xl font-bold text-white">
-                {String(nft?.metadata.name).split("#")[0]}
+                {String(nft.metadata.name).split("#")[0]}
               </p>
             ) : (
               isLoading && (
@@ -163,7 +167,7 @@ const InvestorProfilePage = () => {
           </div>
 
           <div className="-mt-4 flex flex-col gap-4">
-            {nft?.metadata.attributes.length > 0 && (
+            {nft?.metadata.attributes && (nft.metadata.attributes as unknown as NFTAttribute[]).length > 0 && (
               <>
                 {isLoading ? (
                   <div className="mt-2 h-8 w-1/2 animate-pulse rounded-lg bg-gray-800" />
@@ -173,23 +177,21 @@ const InvestorProfilePage = () => {
                       Attributes
                     </p>
                     <div className="flex flex-wrap gap-4">
-                      {nft?.metadata.attributes?.map(
-                        (attr: { trait_type: string; value: string | string[] }) => (
-                          <div
-                            className="flex flex-col rounded-lg border border-gray-700 p-4"
-                            key={attr.trait_type}
-                          >
-                            <h2 className="text-sm font-semibold text-[#646D7A]">
-                              {attr.trait_type}
-                            </h2>
-                            <h1 className="text-xl font-semibold text-gray-200">
-                              {Array.isArray(attr.value)
-                                ? attr.value.join(", ")
-                                : attr.value}
-                            </h1>
-                          </div>
-                        )
-                      )}
+                      {(nft.metadata.attributes as unknown as NFTAttribute[]).map((attr) => (
+                        <div
+                          className="flex flex-col rounded-lg border border-gray-700 p-4"
+                          key={attr.trait_type}
+                        >
+                          <h2 className="text-sm font-semibold text-[#646D7A]">
+                            {attr.trait_type}
+                          </h2>
+                          <h1 className="text-xl font-semibold text-gray-200">
+                            {Array.isArray(attr.value)
+                              ? attr.value.join(", ")
+                              : attr.value}
+                          </h1>
+                        </div>
+                      ))}
                     </div>
                   </>
                 )}

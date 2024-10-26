@@ -1,8 +1,10 @@
+import { useTheme } from "@/context/ThemeProvider";
 import { startupContract } from "@/consts/parameters";
 import { truncateAddress } from "@/utils/truncateAddress";
 import type { FC } from "react";
 
 export const PoweredBy: FC = () => {
+  const { theme } = useTheme();
   return (
     <a
       href={`https://thirdweb.com/${startupContract.chain.id}/${startupContract.address}`}
@@ -16,10 +18,16 @@ export const PoweredBy: FC = () => {
         alt="thirdweb"
       />
       <div className="flex flex-col">
-        <p className="text-xs font-semibold text-white">
+        <p 
+          className="text-xs font-semibold"
+          style={{color: theme.colors.primaryText}}
+          >
           {truncateAddress(startupContract.address)}
         </p>
-        <p className="text-[8px] font-bold text-white/50">
+        <p 
+          className="text-[8px] font-bold"
+          style={{color: theme.colors.primaryText}}
+          >
           powered by thirdweb
         </p>
       </div>
