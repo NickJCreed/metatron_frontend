@@ -19,6 +19,7 @@ export const Footer: FC<IProps> = ({
 }) => {
   if (!totalCount) return null;
   const noOfPages = Math.ceil(totalCount / nftsPerPage);
+  
   const start = (page - 1) * nftsPerPage;
   const end = Math.min(start + nftsPerPage, totalCount);
 

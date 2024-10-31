@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTheme } from "@/context/ThemeProvider"; 
 import { useParams, useNavigate } from "react-router-dom"; 
 import { client } from "@/consts/parameters";
 import { Helmet } from "react-helmet-async";
@@ -11,6 +12,7 @@ import { investorContract } from "@/consts/parameters";
 
 const InvestorProfilePage = () => {
   const { id } = useParams();
+  const { theme } = useTheme();
   const navigate = useNavigate(); 
   
   const { data: nft, isLoading, error } = useReadContract(getNFT, {
@@ -49,14 +51,14 @@ const InvestorProfilePage = () => {
   
 
   return (
-    <div className="m-0 min-h-screen bg-[#0A0A0A] p-0 font-inter text-neutral-200">
+    <div className="m-10 min-h-screen p-10 font-inter text-neutral-200" style={{background: theme.colors.secondaryBg}}>
       <Helmet>
-        <title>{nft?.metadata.name || "Investor Profile"}</title>
+        <title style={{color: theme.colors.primaryText}}>{nft?.metadata.name || "Investor Profile"}</title>
       </Helmet>
 
       <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 md:flex-row">
         <div className="flex flex-col px-10 md:min-h-screen md:w-1/2">
-          <div className="mb-4 flex space-x-4">
+          {/* <div className="mb-4 flex space-x-4">
             <button
               onClick={() => navigate(-1)}
               className="text-white bg-[#20c474] hover:bg-[#a8d8c1] font-bold py-2 px-4 rounded-full"
@@ -75,12 +77,12 @@ const InvestorProfilePage = () => {
             >
               &rarr;
             </button>
-          </div>
+          </div> */}
           {nft ? (
             <MediaRenderer
               client={client}
               src={nft.metadata.image}
-              className="!md:h-96 !md:w-96 !h-full !max-h-[600px] !w-full !max-w-[600px] !rounded-lg !object-cover"
+              className="!md:h-75 !md:w-75 !h-full !max-h-[600px] !w-full !max-w-[600px] !rounded-lg !object-cover"
             />
           ) : (
             isLoading && (
@@ -89,7 +91,10 @@ const InvestorProfilePage = () => {
           )}
 
           {eventsData && eventsData.length > 0 ? (
-            <p className="mt-8 hidden text-lg font-semibold uppercase text-[#646D7A] md:flex">
+            <p 
+              className="mt-8 hidden text-lg font-semibold uppercase md:flex"
+              style={{color: theme.colors.tertiaryText}}
+              >
               History
             </p>
           ) : (
@@ -112,7 +117,10 @@ const InvestorProfilePage = () => {
         <div className="mt-10 flex w-full flex-col gap-6 px-10 md:mt-0 md:min-h-screen md:w-1/2">
           <div className="flex flex-col">
             {contractMetadata?.name ? (
-              <p className="text-lg font-semibold uppercase text-[#646D7A]">
+              <p 
+                className="text-lg font-semibold uppercase"
+                style={{color: theme.colors.tertiaryText}}
+                >
                 Collection
               </p>
             ) : (
@@ -124,19 +132,28 @@ const InvestorProfilePage = () => {
             {isLoading ? (
               <div className="mt-2 h-8 w-1/2 animate-pulse rounded-lg bg-gray-800" />
             ) : (
-              <p className="text-3xl font-bold text-white">
+              <p 
+                className="text-3xl font-bold"
+                style={{color: theme.colors.primaryText}}
+                >
                 {contractMetadata?.name}
               </p>
             )}
           </div>
 
           <div className="flex flex-col">
-            <p className="text-lg font-semibold uppercase text-[#646D7A]">
+            <p 
+              className="text-lg font-semibold uppercase"
+              style={{color: theme.colors.tertiaryText}}
+              >
               #{id}
             </p>
 
             {nft?.metadata.name ? (
-              <p className="text-3xl font-bold text-white">
+              <p 
+              className="text-3xl font-bold"
+              style={{color: theme.colors.primaryText}}
+              >
                 {String(nft.metadata.name).split("#")[0]}
               </p>
             ) : (
@@ -148,7 +165,10 @@ const InvestorProfilePage = () => {
 
           <div className="flex flex-col">
             {nft?.metadata.description ? (
-              <p className="text-lg font-semibold uppercase text-[#646D7A]">
+              <p 
+                className="text-lg font-semibold uppercase"
+                style={{color: theme.colors.tertiaryText}}
+                >
                 Description
               </p>
             ) : (
@@ -160,7 +180,10 @@ const InvestorProfilePage = () => {
             {isLoading ? (
               <div className="mt-2 h-8 w-1/2 animate-pulse rounded-lg bg-gray-800" />
             ) : (
-              <p className="text-lg font-medium text-white">
+              <p 
+                className="text-lg font-medium"
+                style={{color: theme.colors.primaryText}}
+                >
                 {nft?.metadata.description}
               </p>
             )}
@@ -173,7 +196,10 @@ const InvestorProfilePage = () => {
                   <div className="mt-2 h-8 w-1/2 animate-pulse rounded-lg bg-gray-800" />
                 ) : (
                   <>
-                    <p className="text-lg font-semibold uppercase text-[#646D7A]">
+                    <p 
+                      className="text-lg font-semibold uppercase"
+                      style={{color: theme.colors.tertiaryText}}
+                      >
                       Attributes
                     </p>
                     <div className="flex flex-wrap gap-4">
@@ -182,7 +208,10 @@ const InvestorProfilePage = () => {
                           className="flex flex-col rounded-lg border border-gray-700 p-4"
                           key={attr.trait_type}
                         >
-                          <h2 className="text-sm font-semibold text-[#646D7A]">
+                          <h2 
+                            className="text-sm font-semibold"
+                            style={{color: theme.colors.tertiaryText}}
+                            >
                             {attr.trait_type}
                           </h2>
                           <h1 className="text-xl font-semibold text-gray-200">

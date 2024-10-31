@@ -16,7 +16,7 @@ const PaginationHelper: FC<IProps> = ({
 }) => {
   const [isSearching, setIsSearching] = useState(false);
   const { theme } = useTheme();
-
+  
   useEffect(() => {
     setIsSearching(false);
   }, [page]);

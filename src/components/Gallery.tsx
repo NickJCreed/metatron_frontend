@@ -12,11 +12,9 @@ import { useReadContract } from "thirdweb/react";
 import { Footer } from "@/components/Nav/Footer";
 import { NFTAttribute } from "@/types/nftTypes";
 
-// Component mapping
 const componentMap: { [key: string]: React.FC<any> } = {
   startup: NFTCard,
   investor: InvestorCard,
-  // Add connector and other mappings here if needed
 };
 
 interface GalleryProps {
@@ -28,12 +26,18 @@ interface GalleryProps {
   type: "startup" | "investor" | "connector";
 }
 
-const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage, setTotalCount, type }) => {
+const Gallery: React.FC<GalleryProps> = ({
+  contract,
+  page,
+  setPage,
+  nftsPerPage,
+  setTotalCount,
+  type,
+}) => {
   const { theme } = useTheme();
   const [search, setSearch] = useState<string>("");
   const debouncedSearchTerm = useDebounce(search, 500);
   const [filteredNFTs, setFilteredNFTs] = useState<NFT[]>([]);
-
   const start = BigInt((page - 1) * nftsPerPage);
   const count = BigInt(nftsPerPage);
 
@@ -53,10 +57,10 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
     });
 
   useEffect(() => {
-    if (totalCount !== undefined) {
+    if (totalCount !== undefined && !debouncedSearchTerm) {
       setTotalCount(Number(totalCount));
     }
-  }, [totalCount, setTotalCount]);
+  }, [totalCount, setTotalCount, debouncedSearchTerm]);
 
   useEffect(() => {
     if (debouncedSearchTerm) {
@@ -64,10 +68,12 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
         nft.metadata.name?.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
       );
       setFilteredNFTs(filteredResults || []);
+      setTotalCount(filteredResults ? filteredResults.length : 0);
     } else {
       setFilteredNFTs(nfts || []);
+      setTotalCount(nfts ? nfts.length : 0);
     }
-  }, [debouncedSearchTerm, nfts]);
+  }, [debouncedSearchTerm, nfts, setTotalCount]);  
 
   useEffect(() => {
     setPage(1); // Reset page when contract changes
@@ -152,7 +158,13 @@ const Gallery: React.FC<GalleryProps> = ({ contract, page, setPage, nftsPerPage,
           </div>
         )}
 
-        <Footer page={page} setPage={setPage} nftsPerPage={nftsPerPage} totalCount={Number(totalCount)} loading={isLoading} />
+        <Footer   
+         page={page}
+         setPage={setPage}
+         nftsPerPage={nftsPerPage}
+         totalCount={Number(totalCount)}
+         loading={isLoading} 
+         />
       </div>
     </div>
   );
