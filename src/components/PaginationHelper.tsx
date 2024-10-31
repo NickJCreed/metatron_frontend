@@ -1,4 +1,3 @@
-import useDebounce from "@/hooks/useDebounce";
 import { useTheme } from "@/context/ThemeProvider";
 import { FC, useEffect, useState } from "react";
 
@@ -16,29 +15,14 @@ const PaginationHelper: FC<IProps> = ({
   loading,
 }) => {
   const [isSearching, setIsSearching] = useState(false);
-  const [pageInput, setPageInput] = useState<number>(page);
-  const debouncedSearchTerm = useDebounce(String(pageInput), 500);
   const { theme } = useTheme();
 
   useEffect(() => {
-    if (debouncedSearchTerm) {
-      setIsSearching(true);
-      const newPage = Number(debouncedSearchTerm);
-      if (newPage > 0 && newPage <= noOfPages) {
-        setPage(newPage);
-      } else {
-        setPage(1);
-      }
-      setIsSearching(false);
-    }
-  }, [debouncedSearchTerm, setPage, noOfPages]);
-
-  useEffect(() => {
-    setPageInput(page);
+    setIsSearching(false);
   }, [page]);
 
   return (
-    <div className="flex items-center gap-2 md:ml-auto">
+    <div className="flex items-center justify-center gap-2">
       {isSearching || loading ? (
         <div 
           className="h-6 w-6 animate-spin rounded-full border-b-2"
@@ -47,19 +31,19 @@ const PaginationHelper: FC<IProps> = ({
             color: theme.colors.primaryText,
             borderColor: theme.colors.borderColor
           }}
-          >
-        </div>
+        ></div>
       ) : (
         <>
           <button
-            className="rounded-lg px-4 py-2 shadow-2xl disabled:opacity-50"
+            className="rounded-lg px-4 py-2 shadow-2xl disabled:opacity-30" 
             style={{
               backgroundColor: theme.colors.secondaryBg,
               color: theme.colors.primaryText,
               borderColor: theme.colors.borderColor,
+              opacity: page === 1 ? 0.3 : 1, 
             }}
             onClick={() => setPage(page - 1)}
-            disabled={page === 1}
+            disabled={page === 1} 
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -76,28 +60,28 @@ const PaginationHelper: FC<IProps> = ({
               />
             </svg>
           </button>
-          <input
-            type="number"
-            className="w-16 rounded-lg p-2 shadow-2xl focus:border-0 focus:outline-none focus:ring-0 active:border-0 active:outline-none active:ring-0"
+
+          <span
+            className="text-2xl font-bold"
             style={{
               backgroundColor: theme.colors.secondaryBg,
               color: theme.colors.primaryText,
               borderColor: theme.colors.borderColor,
             }}
-            onChange={(e) => setPageInput(Number(e.target.value))}
-            value={pageInput}
-            min={1}
-            max={noOfPages}
-          />
+          >
+            {`${page} / ${noOfPages}`}
+          </span>
+
           <button
-            className="rounded-lg px-4 py-2 shadow-2xl"
+            className="rounded-lg px-4 py-2 shadow-2xl disabled:opacity-30"
             style={{ 
               backgroundColor: theme.colors.secondaryBg,
               color: theme.colors.primaryText,
-              borderColor: theme.colors.borderColor
+              borderColor: theme.colors.borderColor,
+              opacity: page === noOfPages ? 0.3 : 1, 
             }}
             onClick={() => setPage(page + 1)}
-            disabled={page === noOfPages}
+            disabled={page === noOfPages} 
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
