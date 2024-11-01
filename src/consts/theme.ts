@@ -46,7 +46,7 @@
       connectedButtonBg: "#e2e8f0",
       connectedButtonBgHover: "#cbd5e1",
       borderColor: "#cbd5e1",
-      modalBg: "#1c1c24",
+      modalBg: "#edf2f7",
       modalOverlayBg: "rgba(255, 255, 255, 0.8)",
       secondaryButtonBg: "#edf2f7",
       secondaryButtonHoverBg: "#e2e8f0",

@@ -1,13 +1,16 @@
-import { useTheme } from "@/context/ThemeProvider"; // Ensure you are importing from ThemeContext, not ThemeProvider
+import { useTheme } from "@/context/ThemeProvider"; 
 import { client, startupContract, wallets } from "@/consts/parameters";
 import { getContractMetadata } from "thirdweb/extensions/common";
 import { getNFT } from "thirdweb/extensions/erc721";
 import { ConnectButton, useReadContract } from "thirdweb/react";
+import { generateThirdWebTheme } from "@/utils/thirdwebTheme";
 import { Link } from "react-router-dom";
 import { logo } from "@/assets";
 
 export const Header: React.FC = () => {
   const { theme } = useTheme(); 
+  const customTheme = generateThirdWebTheme(theme.type); // Theme definitions for thirdweb imported components
+
   const { data: firstNFT, isLoading: nftLoading } = useReadContract(getNFT, {
     contract: startupContract,
     tokenId: 1n,
@@ -36,7 +39,7 @@ export const Header: React.FC = () => {
         <ConnectButton
           client={client}
           wallets={wallets}
-          theme={theme}
+          theme={customTheme}
           connectModal={{ size: "compact" }}
           connectButton={{ label: "Sign In" }}
         />

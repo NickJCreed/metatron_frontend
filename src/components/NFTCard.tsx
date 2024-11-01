@@ -44,7 +44,14 @@ export const NFTCard: FC<INFTCardProps> = ({ nft, startupName, fundingStage, loc
         style={{ height: '360px', backgroundColor: theme.colors.modalBg }}  // Reduced the height slightly
       >
         {/* Image container taking up 60% of the card's height */}
-        <div className="image-container" style={{ height: '60%', padding: '5px', backgroundColor: '#1c1c24', borderRadius: '5px' }}>
+        <div 
+          className="image-container" 
+          style={{ 
+            height: '60%', 
+            padding: '5px', 
+            backgroundColor: theme.colors.modalBg, 
+            borderRadius: '5px' }}
+          >
           <div className="relative image-wrapper h-full w-full">
             <MediaRenderer
               client={client}
@@ -52,7 +59,8 @@ export const NFTCard: FC<INFTCardProps> = ({ nft, startupName, fundingStage, loc
               className="image rounded-[12px] w-full h-full object-cover"
             />
             <div 
-              className="absolute top-3 right-3 cursor-pointer text-white"
+              className="absolute top-3 right-3 cursor-pointer"
+              style={{ color: theme.colors.secondaryText }}
               onClick={(e) => {
                 e.preventDefault();
                 toggleFavorite();
@@ -64,20 +72,48 @@ export const NFTCard: FC<INFTCardProps> = ({ nft, startupName, fundingStage, loc
         </div>
         
         <div className="p-3" style={{ height: '40%' }}> {/* Reduced padding and adjusted height */}
-          <div className="flex flex-row items-center mb-[12px]"> {/* Reduced bottom margin */}
+          <div 
+            className="flex flex-row items-center mb-[12px]" 
+            style={{ color: theme.colors.tertiaryText }}
+            > {/* Reduced bottom margin */}
             {category ? categoryIcons[category] : <FaHandsHelping size={20} />} {/* Default to Service icon if category is unknown */}
-            <p className="ml-[10px] font-epilogue font-medium text-[12px] text-[#808191]">{category}</p>
+            <p 
+              className="ml-[10px] font-epilogue font-medium text-[12px]"
+              style={{ color: theme.colors.secondaryText }}
+              >
+                {category}
+            </p>
           </div>
-          <h3 className="font-epilogue font-semibold text-[16px] text-white text-left leading-[24px] truncate">{startupName}</h3>
+          <h3 
+            className="font-epilogue font-semibold text-[16px] text-left leading-[24px] truncate"
+            style={{ color: theme.colors.primaryText }}
+            >{startupName}
+          </h3>
 
           <div className="flex justify-between flex-wrap mt-[10px] gap-2"> {/* Reduced margin top */}
             <div className="flex flex-col">
-              <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">{location}</h4>
-              <p className="mt-[2px] font-epilogue font-normal text-[12px] leading-[18px] text-[#808191] sm:max-w-[120px] truncate">Location</p>
+              <h4 
+                className="font-epilogue font-semibold text-[14px] leading-[22px]"
+                style={{ color: theme.colors.secondaryText }}
+              >{location}
+              </h4>
+              <p 
+                className="mt-[2px] font-epilogue font-normal text-[12px] leading-[18px] sm:max-w-[120px] truncate"
+                style={{ color: theme.colors.secondaryText }}
+                >Location
+              </p>
             </div>
             <div className="flex flex-col">
-              <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">{fundingStage}</h4>
-              <p className="mt-[2px] font-epilogue font-normal text-[12px] leading-[18px] text-[#808191] sm:max-w-[120px] truncate">Stage</p>
+              <h4 
+                className="font-epilogue font-semibold text-[14px] leading-[22px]"
+                style={{ color: theme.colors.tertiaryText }}
+                >{fundingStage}
+              </h4>
+              <p 
+                className="mt-[2px] font-epilogue font-normal text-[12px] leading-[18px] sm:max-w-[120px] truncate"
+                style={{ color: theme.colors.secondaryText }}
+                >Stage
+              </p>
             </div>
           </div>
         </div>

@@ -5,7 +5,6 @@ import sunIcon from '@/assets/sun.svg';
 import moonIcon from '@/assets/moon.svg'; 
 import { navlinks } from '@/consts/parameters'; 
 import { useContract } from "@/context/ContractProvider";
-import { darkTheme } from 'thirdweb/react';
 
 interface IconProps {
   styles?: string;
