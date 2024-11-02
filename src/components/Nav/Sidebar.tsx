@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from "@/context/ThemeProvider"; 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import sunIcon from '@/assets/sun.svg';
 import moonIcon from '@/assets/moon.svg'; 
 import { navlinks } from '@/consts/parameters'; 
@@ -10,7 +10,7 @@ interface IconProps {
   styles?: string;
   name?: string;
   imgUrl: string;
-  isActive?: string;
+  isActive?: boolean;
   disabled?: boolean;
   handleClick?: () => void;
 }
@@ -20,12 +20,12 @@ const Icon: React.FC<IconProps> = ({ styles, name, imgUrl, isActive, disabled, h
 
   return (
     <div
-      className={`relative w-[48px] h-[48px] rounded-[10px] ${isActive && isActive === name } flex justify-center items-center ${!disabled && 'cursor-pointer'} ${styles}`}
+      className={`relative w-[48px] h-[48px] rounded-[10px] ${isActive ? 'bg-selectedColor' : ''} flex justify-center items-center ${!disabled && 'cursor-pointer'} ${styles}`}
       onClick={handleClick}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
     >
-      <img src={imgUrl} alt={name} className={`w-1/2 h-1/2 ${isActive !== name && 'grayscale'}`} />
+      <img src={imgUrl} alt={name} className={`w-1/2 h-1/2 ${!isActive && 'grayscale'}`} />
       {showTooltip && (
         <div className="absolute left-full top-1/2 transform -translate-y-1/2 ml-4 py-2 px-4 bg-gray-800 text-white text-sm rounded-lg shadow-lg font-semibold">
           {name}
@@ -39,10 +39,9 @@ const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const { setContract } = useContract();
   const { theme, toggleTheme } = useTheme(); 
-  const [isActive, setIsActive] = useState("dashboard");
+  const location = useLocation();
 
-  const handleNavigation = (name: string, link: string, contract: string) => {
-    setIsActive(name);
+  const handleNavigation = (link: string, contract: string) => {
     setContract(contract);
     navigate(link);
   };
@@ -58,11 +57,11 @@ const Sidebar: React.FC = () => {
             key={link.name}
             name={link.name}
             imgUrl={link.imgUrl}
-            isActive={isActive}
+            isActive={location.pathname === link.link} // Set active based on current path
             disabled={link.disabled}
             handleClick={() => {
               if (!link.disabled) {
-                handleNavigation(link.name, link.link, link.contract);
+                handleNavigation(link.link, link.contract);
               }
             }}
           />
