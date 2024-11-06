@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTheme } from "@/context/ThemeProvider"; 
 import { useNavigate, useLocation } from 'react-router-dom';
 import sunIcon from '@/assets/sun.svg';
@@ -16,21 +16,12 @@ interface IconProps {
 }
 
 const Icon: React.FC<IconProps> = ({ styles, name, imgUrl, isActive, disabled, handleClick }) => {
-  const [showTooltip, setShowTooltip] = useState(false);
-
   return (
     <div
       className={`relative w-[48px] h-[48px] rounded-[10px] ${isActive ? 'bg-selectedColor' : ''} flex justify-center items-center ${!disabled && 'cursor-pointer'} ${styles}`}
       onClick={handleClick}
-      onMouseEnter={() => setShowTooltip(true)}
-      onMouseLeave={() => setShowTooltip(false)}
     >
       <img src={imgUrl} alt={name} className={`w-1/2 h-1/2 ${!isActive && 'grayscale'}`} />
-      {showTooltip && (
-        <div className="absolute left-full top-1/2 transform -translate-y-1/2 ml-4 py-2 px-4 bg-gray-800 text-white text-sm rounded-lg shadow-lg font-semibold">
-          {name}
-        </div>
-      )}
     </div>
   );
 };
@@ -46,33 +37,69 @@ const Sidebar: React.FC = () => {
     navigate(link);
   };
 
+  // Define classes for vertical (sidebar) and horizontal (bottom bar) layouts
+  const verticalBarClasses = `
+    fixed top-[64px] left-0 z-10 flex flex-col items-center p-4
+    md:ml-4 md:mt-10 md:h-[75vh] md:rounded-[20px] md:flex-col
+  `;
+  
+  const horizontalBarClasses = `
+  fixed bottom-0 left-0 w-full z-10 flex items-center justify-around p-2 md:hidden
+`;
+
   return (
-    <div
-      className="fixed top-[64px] left-0 z-10 flex flex-col items-center justify-between p-4 ml-4 mt-10 h-[75vh] rounded-[20px]"
-      style={{ backgroundColor: theme.colors.tertiaryBg }}
-    >
-      <div className="flex flex-col items-center gap-3">
-        {navlinks.map((link) => (
-          <Icon
-            key={link.name}
-            name={link.name}
-            imgUrl={link.imgUrl}
-            isActive={location.pathname === link.link} // Set active based on current path
-            disabled={link.disabled}
-            handleClick={() => {
-              if (!link.disabled) {
-                handleNavigation(link.link, link.contract);
-              }
-            }}
-          />
-        ))}
+    <>
+      {/* Vertical Sidebar for Desktop */}
+      <div 
+        className={`${verticalBarClasses} hidden md:flex`}
+        style={{ backgroundColor: theme.colors.tertiaryBg }}
+        >
+        <div className="flex flex-col items-center gap-3">
+          {navlinks.map((link) => (
+            <Icon
+              key={link.name}
+              name={link.name}
+              imgUrl={link.imgUrl}
+              isActive={location.pathname === link.link} 
+              disabled={link.disabled}
+              handleClick={() => {
+                if (!link.disabled) {
+                  handleNavigation(link.link, link.contract);
+                }
+              }}
+            />
+          ))}
+        </div>
+        <Icon
+          name="Toggle Theme"
+          imgUrl={theme.type === 'dark' ? sunIcon : moonIcon}
+          handleClick={toggleTheme}
+        />
       </div>
-      <Icon
-        name="Toggle Theme"
-        imgUrl={theme.type === 'dark' ? sunIcon : moonIcon}
-        handleClick={toggleTheme} 
-      />
-    </div>
+
+      {/* Horizontal Bottom Bar for Mobile */}
+      <div 
+        className={`${horizontalBarClasses}`}
+        style={{ backgroundColor: theme.colors.tertiaryBg }}
+        >
+        {navlinks
+          .filter((link) => link.name !== 'logout' && link.name !== 'Toggle Theme') // Exclude some icons on mobile
+          .map((link) => (
+            <Icon
+              key={link.name}
+              name={link.name}
+              imgUrl={link.imgUrl}
+              isActive={location.pathname === link.link} 
+              disabled={link.disabled}
+              handleClick={() => {
+                if (!link.disabled) {
+                  handleNavigation(link.link, link.contract);
+                }
+              }}
+            />
+          ))}
+      </div>
+    </>
   );
 };
 
