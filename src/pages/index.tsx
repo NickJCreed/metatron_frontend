@@ -56,7 +56,7 @@ function App() {
   return (
     <div 
       className="m-0 p-0 font-inter text-neutral-200"
-      // style={{ backgroundColor: theme.colors.accentButtonBg }}
+      style={{ backgroundColor: theme.colors.accentButtonBg }}
       >
       <Header />
 
