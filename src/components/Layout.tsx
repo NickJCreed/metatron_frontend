@@ -7,13 +7,13 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const { theme } = useTheme(); 
 
   return (
-    <div className="flex flex-col min-h-screen" 
+    <div className="flex flex-col min-h-screen overflow-x-hidden" 
       style={{ backgroundColor: theme.colors.secondaryBg, color: theme.colors.primaryText }}
       >
         <Header />
         <div className="flex flex-1">
           <Sidebar />
-          <main className="flex flex-col flex-1 p-4">
+          <main className="flex flex-col flex-1">
             {children}
           </main>
         </div>

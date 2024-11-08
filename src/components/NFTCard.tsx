@@ -38,7 +38,7 @@ export const NFTCard: FC<INFTCardProps> = ({ nft, startupName, fundingStage, loc
   return (
     <Link to={`/nft/${nft.id.toString()}`}>
       <div
-        className="sm:w-[288px] w-full rounded-[15px] cursor-pointer transition-all duration-300 hover:scale-105 relative p-2 box-border"
+        className="w-[288px] rounded-[15px] cursor-pointer transition-all duration-300 hover:scale-105 relative p-2 box-border"
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         style={{ height: '360px', backgroundColor: theme.colors.modalBg }}  // Reduced the height slightly

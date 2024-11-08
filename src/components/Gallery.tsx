@@ -106,7 +106,7 @@ const Gallery: React.FC<GalleryProps> = ({
   const CardComponent = componentMap[type];
 
   return (
-    <div className="m-0 pt-20 font-inter text-neutral-200" style={{ backgroundColor: theme.colors.secondaryBg }}>
+    <div className="m-0 pt-20 pb-20 font-inter text-neutral-200 max-w-full" style={{ backgroundColor: theme.colors.secondaryBg }}>
       <Helmet>
         <title>{contractMetadata?.name}</title>
       </Helmet>
@@ -125,7 +125,7 @@ const Gallery: React.FC<GalleryProps> = ({
         ) : null}
 
         <div
-          className="mx-auto mb-8 flex h-12 w-96 max-w-full items-center rounded-lg border px-4 text-xl"
+          className="mx-auto mb-8 flex h-12 mx-auto max-w-full items-center rounded-lg border px-4 text-xl"
           style={{
             backgroundColor: theme.colors.secondaryBg,
             color: theme.colors.primaryText,
@@ -151,7 +151,7 @@ const Gallery: React.FC<GalleryProps> = ({
             ))}
           </div>
         ) : (
-          <div className="flex flex-wrap items-center justify-center gap-8">
+          <div className="mx-auto flex flex-wrap items-center justify-center gap-8">
             {filteredNFTs.map((nft) => (
               <CardComponent {...mapNFTToProps(nft)} key={nft.id.toString()} />
             ))}
