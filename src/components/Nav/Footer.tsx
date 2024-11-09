@@ -24,12 +24,12 @@ export const Footer: FC<IProps> = ({
   const end = Math.min(start + nftsPerPage, totalCount);
 
   return (
-    <div className="mb-4 mt-10 flex w-full items-center gap-6">
-      {/* Left empty space */}
-      <div className="w-1/3" />
+    <div className="mb-4 mt-10 flex w-full flex-col items-center gap-6 sm:flex-row">
+      {/* Left empty space (hidden on mobile) */}
+      <div className="hidden w-1/3 sm:block" />
 
       {/* Centered PaginationHelper */}
-      <div className="w-1/3 flex justify-center mx-auto">
+      <div className="w-full sm:w-1/3 flex justify-center">
         <PaginationHelper
           page={page}
           noOfPages={noOfPages}
@@ -38,8 +38,8 @@ export const Footer: FC<IProps> = ({
         />
       </div>
 
-      {/* Right-aligned PoweredBy */}
-      <div className="w-1/3 flex justify-end">
+      {/* Right-aligned PoweredBy, moves below on smaller screens */}
+      <div className="w-full flex justify-center sm:w-1/3 sm:justify-end">
         <PoweredBy />
       </div>
     </div>

@@ -33,7 +33,7 @@ export const InvestorCard: FC<IInvestorCardProps> = ({ nft, investorName, hq, in
   return (
     <Link to={`/investor/${nft.id.toString()}`}>
       <div
-        className="sm:w-[288px] w-full rounded-[15px] bg-[#1c1c24] cursor-pointer transition-all duration-300 hover:scale-105 relative p-2 box-border"
+        className="w-[288px] rounded-[15px] bg-[#1c1c24] cursor-pointer transition-all duration-300 hover:scale-105 relative p-2 box-border"
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         style={{ height: '360px' }}  // Adjusted height similar to startup cards

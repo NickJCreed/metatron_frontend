@@ -22,7 +22,7 @@ const PaginationHelper: FC<IProps> = ({
   }, [page]);
 
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6">
       {isSearching || loading ? (
         <div 
           className="h-6 w-6 animate-spin rounded-full border-b-2"
@@ -35,7 +35,7 @@ const PaginationHelper: FC<IProps> = ({
       ) : (
         <>
           <button
-            className="rounded-lg px-4 py-2 shadow-2xl disabled:opacity-30" 
+            className="rounded-lg px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 shadow-2xl disabled:opacity-30" 
             style={{
               backgroundColor: theme.colors.secondaryBg,
               color: theme.colors.primaryText,
@@ -51,7 +51,7 @@ const PaginationHelper: FC<IProps> = ({
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke={theme.colors.primaryText}
-              className="h-6 w-6"
+              className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6"
             >
               <path
                 strokeLinecap="round"
@@ -62,7 +62,7 @@ const PaginationHelper: FC<IProps> = ({
           </button>
 
           <span
-            className="text-2xl font-bold"
+            className="text-sm sm:text-lg md:text-2xl font-bold"
             style={{
               backgroundColor: theme.colors.secondaryBg,
               color: theme.colors.primaryText,
@@ -73,7 +73,7 @@ const PaginationHelper: FC<IProps> = ({
           </span>
 
           <button
-            className="rounded-lg px-4 py-2 shadow-2xl disabled:opacity-30"
+            className="rounded-lg px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 shadow-2xl disabled:opacity-30"
             style={{ 
               backgroundColor: theme.colors.secondaryBg,
               color: theme.colors.primaryText,
@@ -89,7 +89,7 @@ const PaginationHelper: FC<IProps> = ({
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke={theme.colors.primaryText}
-              className="h-6 w-6"
+              className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6"
             >
               <path
                 strokeLinecap="round"
