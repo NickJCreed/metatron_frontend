@@ -51,38 +51,18 @@ const InvestorProfilePage = () => {
   
 
   return (
-    <div className="m-10 min-h-screen p-10 font-inter text-neutral-200" style={{background: theme.colors.secondaryBg}}>
-      <Helmet>
+    <div className="m-0 mt-10 min-h-screen p-8 pb-20 font-inter text-neutral-200" style={{background: theme.colors.secondaryBg}}>
+      {/* <Helmet>
         <title style={{color: theme.colors.primaryText}}>{nft?.metadata.name || "Investor Profile"}</title>
-      </Helmet>
+      </Helmet> */}
 
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 md:flex-row">
+      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col md:flex-row">
         <div className="flex flex-col px-10 md:min-h-screen md:w-1/2">
-          {/* <div className="mb-4 flex space-x-4">
-            <button
-              onClick={() => navigate(-1)}
-              className="text-white bg-[#20c474] hover:bg-[#a8d8c1] font-bold py-2 px-4 rounded-full"
-            >
-              Back
-            </button>
-            <button
-              onClick={() => navigate(`/investor/${Number(id) - 1}`)}
-              className="text-white bg-[#347854] hover:bg-[#2e6a4a] font-bold py-2 px-4 rounded-full"
-            >
-              &larr;
-            </button>
-            <button
-              onClick={() => navigate(`/investor/${Number(id) + 1}`)}
-              className="text-white bg-[#347854] hover:bg-[#2e6a4a] font-bold py-2 px-4 rounded-full"
-            >
-              &rarr;
-            </button>
-          </div> */}
           {nft ? (
             <MediaRenderer
               client={client}
               src={nft.metadata.image}
-              className="!md:h-75 !md:w-75 !h-full !max-h-[600px] !w-full !max-w-[600px] !rounded-lg !object-cover"
+              className="!w-full mb-5 !max-w-[90vw] !md:max-w-[600px] !h-auto !rounded-lg !object-cover"
             />
           ) : (
             isLoading && (
@@ -114,7 +94,7 @@ const InvestorProfilePage = () => {
           )}
         </div>
 
-        <div className="mt-10 flex w-full flex-col gap-6 px-10 md:mt-0 md:min-h-screen md:w-1/2">
+        <div className="md:mt-10 flex w-full md:pt-20 flex-col gap-6 md:mt-0 md:min-h-screen md:w-1/2">
           <div className="flex flex-col">
             {contractMetadata?.name ? (
               <p 
@@ -163,7 +143,7 @@ const InvestorProfilePage = () => {
             )}
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col mb-4">
             {nft?.metadata.description ? (
               <p 
                 className="text-lg font-semibold uppercase"
@@ -205,7 +185,7 @@ const InvestorProfilePage = () => {
                     <div className="flex flex-wrap gap-4">
                       {(nft.metadata.attributes as unknown as NFTAttribute[]).map((attr) => (
                         <div
-                          className="flex flex-col rounded-lg border border-gray-700 p-4"
+                          className="w-[85vw] flex flex-col rounded-lg border border-gray-700 p-4 overflow-hidden"
                           key={attr.trait_type}
                         >
                           <h2 
@@ -214,7 +194,10 @@ const InvestorProfilePage = () => {
                             >
                             {attr.trait_type}
                           </h2>
-                          <h1 className="text-xl font-semibold text-gray-200">
+                          <h1 
+                            className="text-xl font-semibold"
+                            style={{color: theme.colors.accentButtonText}}
+                            >
                             {Array.isArray(attr.value)
                               ? attr.value.join(", ")
                               : attr.value}

@@ -40,7 +40,7 @@ const Sidebar: React.FC = () => {
   // Define classes for vertical (sidebar) and horizontal (bottom bar) layouts
   const verticalBarClasses = `
     fixed top-[64px] left-0 z-10 flex flex-col items-center p-4
-    md:ml-4 md:mt-10 md:h-[75vh] md:rounded-[20px] md:flex-col
+    md:ml-4 md:mt-10 md:max-h-[300] md:rounded-[20px] md:flex-col
   `;
   
   const horizontalBarClasses = `
