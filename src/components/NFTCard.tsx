@@ -60,7 +60,7 @@ export const NFTCard: FC<INFTCardProps> = ({ nft, startupName, fundingStage, loc
             />
             <div 
               className="absolute top-3 right-3 cursor-pointer"
-              style={{ color: theme.colors.secondaryText }}
+              style={{ color: theme.colors.accentButtonText }}
               onClick={(e) => {
                 e.preventDefault();
                 toggleFavorite();
