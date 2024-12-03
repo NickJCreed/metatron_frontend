@@ -5,7 +5,7 @@ import { getNFT } from "thirdweb/extensions/erc721";
 import { ConnectButton, useReadContract } from "thirdweb/react";
 import { generateThirdWebTheme } from "@/utils/thirdwebTheme";
 import { Link } from "react-router-dom";
-import { metatron-logo } from "@/assets";
+import { logo } from "@/assets";
 
 export const Header: React.FC = () => {
   const { theme } = useTheme(); 
@@ -31,7 +31,7 @@ export const Header: React.FC = () => {
         <Link to="/" className="flex items-center space-x-1 sm:space-x-2 md:space-x-6">
           {/* Logo */}
           <img 
-            src={metatron-logo} 
+            src={logo} 
             alt="Logo" 
             className="h-8 w-8 object-contain md:h-12 md:w-12" 
           />

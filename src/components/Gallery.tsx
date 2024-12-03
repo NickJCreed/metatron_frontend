@@ -145,13 +145,13 @@ const Gallery: React.FC<GalleryProps> = ({
         </div>
 
         {isLoading ? (
-          <div className="mx-auto flex flex-wrap items-center justify-center gap-8">
-            {Array.from({ length: nftsPerPage }).map((_, i) => (
+          <div className="mx-auto flex flex-wrap items-center justify-center gap-8 px-4 md:px-8 lg:px-16">
+            {Array.from({ length: Math.min(nftsPerPage, 4) }).map((_, i) => (
               <div className="!h-60 !w-60 animate-pulse rounded-lg bg-gray-800" key={i} />
             ))}
           </div>
         ) : (
-          <div className="mx-auto flex flex-wrap items-center justify-center gap-8">
+          <div className="mx-auto flex flex-wrap items-center justify-center gap-8 px-4 md:px-8 lg:px-16">
             {filteredNFTs.map((nft) => (
               <CardComponent {...mapNFTToProps(nft)} key={nft.id.toString()} />
             ))}
