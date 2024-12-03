@@ -81,14 +81,14 @@ export const navlinks = [
     imgUrl: createCampaign,
     link: '/investors',
     disabled: false,
-    contract: investorContract,
+    contract: investorContract as any,
   },
   {
     name: 'connectors',
     imgUrl: payment,
     link: '/connectors',
     disabled: false,
-    contract: connectorContract,
+    contract: connectorContract as any,
   },
   {
     name: 'vote',
