@@ -7,9 +7,12 @@ import { Layout } from "@/components/Layout";
 import Gallery from "@/components/Gallery";
 import NFTPage from "@/pages/nft/$id";
 import InvestorProfilePage from "@/pages/investor/$id";
+import VotingPage from "@/components/VotingPage";
+import ProposalPage from "@/components/ProposalPage";
 import { usePagination } from "@/hooks/usePagination";
 import { startupContract, investorContract, connectorContract } from "@/consts/parameters";
 import { ThemeProvider } from "./context/ThemeProvider";
+import ConnectorsPage from "@/components/ConnectorsPage";
 
 const App: React.FC = () => {
   const { page, setPage, totalCount, setTotalCount, itemsPerPage } = usePagination();
@@ -50,18 +53,21 @@ const App: React.FC = () => {
                 <Route
                   path="/connectors"
                   element={
-                    <Gallery
-                      contract={connectorContract}
-                      page={page}
-                      setPage={setPage}
-                      nftsPerPage={itemsPerPage}
-                      setTotalCount={setTotalCount}
-                      type="connector"
-                    />
+                    // <Gallery
+                    //   contract={connectorContract}
+                    //   page={page}
+                    //   setPage={setPage}
+                    //   nftsPerPage={itemsPerPage}
+                    //   setTotalCount={setTotalCount}
+                    //   type="connector"
+                    // />
+                    <ConnectorsPage />
                   }
                 />
                 <Route path="/nft/:id" element={<NFTPage />} />
                 <Route path="/investor/:id" element={<InvestorProfilePage />} />
+                <Route path="/vote" element={<VotingPage />} />
+                <Route path="/proposal/:id" element={<ProposalPage />} />
               </Routes>
             </Layout>
           </ThemeProvider>

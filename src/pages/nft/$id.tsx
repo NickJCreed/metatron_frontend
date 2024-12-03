@@ -182,22 +182,22 @@ const NFTPage = () => {
             )}
           </div>
 
-          <div className="-mt-4 flex flex-col gap-4">
-            {nft?.metadata.attributes && (nft.metadata.attributes as unknown as NFTAttribute[]).length > 0 && (
-              <>
-                {isLoading ? (
-                  <div className="mt-2 h-8 w-1/2 animate-pulse rounded-lg bg-gray-800" />
-                ) : (
-                  <>
-                    <p 
-                      className="text-lg font-semibold uppercase"
-                      style={{color: theme.colors.tertiaryText}}
-                      >
-                      Attributes
-                    </p>
-                    <div className="flex flex-wrap gap-4">
-                      {(nft.metadata.attributes as unknown as NFTAttribute[]).map(
-                        (attr: NFTAttribute) => (
+          {isAuthorized && (
+            <div className="-mt-4 flex flex-col gap-4">
+              {nft?.metadata.attributes && (nft.metadata.attributes as unknown as NFTAttribute[]).length > 0 && (
+                <>
+                  {isLoading ? (
+                    <div className="mt-2 h-8 w-1/2 animate-pulse rounded-lg bg-gray-800" />
+                  ) : (
+                    <>
+                      <p 
+                        className="text-lg font-semibold uppercase"
+                        style={{color: theme.colors.tertiaryText}}
+                        >
+                        Attributes
+                      </p>
+                      <div className="flex flex-wrap gap-4">
+                        {(nft.metadata.attributes as unknown as NFTAttribute[]).map((attr) => (
                           <div
                             className="w-[85vw] flex flex-col rounded-lg border border-gray-700 p-4 overflow-hidden"
                             key={attr.trait_type}
@@ -217,14 +217,14 @@ const NFTPage = () => {
                                 : attr.value}
                             </h1>
                           </div>
-                        )
-                      )}
-                    </div>
-                  </>
-                )}
-              </>
-            )}
-          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

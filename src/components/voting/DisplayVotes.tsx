@@ -1,14 +1,17 @@
 import React from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import VoteCard from './VoteCard';
-import { loader } from '../assets';
 
-const DisplayVotes = ({ isLoading, votes }) => {
+interface DisplayVotesProps {
+  isLoading: boolean;
+  votes: any[]; // Adjust the type as necessary
+  children: React.ReactNode;
+}
+
+const DisplayVotes: React.FC<DisplayVotesProps> = ({ isLoading, votes, children }) => {
   return (
     <div className="w-full mt-10">
       {isLoading && (
         <div className="flex justify-center items-center">
-          <img src={loader} alt="loader" className="w-[100px] h-[100px] object-contain" />
+          <img src="/path/to/loader.gif" alt="loader" className="w-[100px] h-[100px] object-contain" />
         </div>
       )}
 
@@ -20,9 +23,7 @@ const DisplayVotes = ({ isLoading, votes }) => {
 
       {!isLoading && votes.length > 0 && (
         <div className="flex flex-col gap-4">
-          {votes.map((vote) => (
-            <VoteCard key={uuidv4()} {...vote} />
-          ))}
+          {children}
         </div>
       )}
     </div>

@@ -51,6 +51,11 @@ export const accessContract: ReturnType<typeof getContract> = getContract({
   client,
 });
 
+export const snapshotParams = {
+  space: 'metatrondao.eth',
+  // Add other necessary parameters here
+};
+
 export const wallets = [
   createWallet("io.metamask"),
   createWallet("com.coinbase.wallet"),
@@ -95,24 +100,23 @@ export const navlinks = [
     imgUrl: withdraw,
     link: '/vote',
     disabled: false,
-    contract: accessContract,
   },
   {
     name: 'profile',
     imgUrl: profile,
     link: '/profile',
     disabled: false,
-    contract: accessContract,
   },
   {
     name: 'logout',
     imgUrl: logout,
     link: '/logout',
-    disabled: false,
-    contract: accessContract, 
+    disabled: false, 
   },
 ];
 
 
 // The block explorer you want to use (Opens when user clicks on history of events. i.e. transfers)
 export const blockExplorer = "https://etherscan.io";
+
+

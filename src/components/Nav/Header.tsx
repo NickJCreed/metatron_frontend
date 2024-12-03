@@ -6,9 +6,11 @@ import { ConnectButton, useReadContract } from "thirdweb/react";
 import { generateThirdWebTheme } from "@/utils/thirdwebTheme";
 import { Link } from "react-router-dom";
 import { logo } from "@/assets";
+import { useAuth } from "@/context/AuthProvider";
 
 export const Header: React.FC = () => {
   const { theme } = useTheme(); 
+  const { isAuthorized } = useAuth();
   const customTheme = generateThirdWebTheme(theme.type); // Theme definitions for thirdweb imported components
 
   const { data: firstNFT, isLoading: nftLoading } = useReadContract(getNFT, {
