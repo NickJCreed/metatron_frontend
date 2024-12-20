@@ -4,69 +4,70 @@ import { Link } from 'react-router-dom';
 import { NFT } from 'thirdweb';
 import { MediaRenderer } from 'thirdweb/react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
-import { FaBuilding, FaMoneyCheck, FaMapMarkerAlt, FaBriefcase } from 'react-icons/fa';
+import { FaIndustry, FaMapMarkerAlt, FaChartLine } from 'react-icons/fa';
 import { useTheme } from "@/context/ThemeProvider";
 import { db } from '@/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
-interface IInvestorCardProps {
+interface StartupCardProps {
   nft?: NFT;
-  investorId?: string;
-  investorData?: {
+  startupId?: string;
+  startupData?: {
     name: string;
-    headquarters: string;
-    investmentStage: string;
-    fundType: string;
+    location: string;
+    fundingStage: string;
+    industry: string;
+    description: string;
     imageUrl: string;
   };
 }
 
-const fundTypeIcons: { [key: string]: JSX.Element } = {
-  'Venture Capital': <FaMoneyCheck size={20} />,
-  'Early Stage VC': <FaBriefcase size={20} />,
-  'Private Equity': <FaBuilding size={20} />,
+const industryIcons: { [key: string]: JSX.Element } = {
+  'Artificial Intelligence': <FaIndustry size={20} />,
+  'Clean Energy': <FaIndustry size={20} />,
+  'Technology': <FaIndustry size={20} />,
 };
 
-export const InvestorCard: FC<IInvestorCardProps> = ({ nft, investorId, investorData: initialInvestorData }) => {
+export const StartupCard: FC<StartupCardProps> = ({ nft, startupId, startupData: initialStartupData }) => {
   const { theme } = useTheme();
   const [hover, setHover] = useState<boolean>(false);
   const [favorite, setFavorite] = useState<boolean>(false);
-  const [investorData, setInvestorData] = useState(initialInvestorData);
+  const [startupData, setStartupData] = useState(initialStartupData);
 
   useEffect(() => {
-    const fetchInvestorData = async () => {
-      if (investorId && !investorData) {
+    const fetchStartupData = async () => {
+      if (startupId && !startupData) {
         try {
-          const investorDoc = await getDoc(doc(db, 'investors', investorId));
-          if (investorDoc.exists()) {
-            setInvestorData(investorDoc.data() as any);
+          const startupDoc = await getDoc(doc(db, 'startups', startupId));
+          if (startupDoc.exists()) {
+            setStartupData(startupDoc.data() as any);
           }
         } catch (error) {
-          console.error('Error fetching investor data:', error);
+          console.error('Error fetching startup data:', error);
         }
       }
     };
 
-    fetchInvestorData();
-  }, [investorId, investorData]);
+    fetchStartupData();
+  }, [startupId, startupData]);
 
   const toggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
     setFavorite(!favorite);
   };
 
-  if (!investorData && !nft) {
+  if (!startupData && !nft) {
     return null;
   }
 
-  const name = investorData?.name || nft?.metadata.name || '';
-  const headquarters = investorData?.headquarters || '';
-  const investmentStage = investorData?.investmentStage || '';
-  const fundType = investorData?.fundType || '';
-  const imageUrl = investorData?.imageUrl || nft?.metadata.image || '';
+  const name = startupData?.name || nft?.metadata.name || '';
+  const location = startupData?.location || '';
+  const fundingStage = startupData?.fundingStage || '';
+  const industry = startupData?.industry || '';
+  const imageUrl = startupData?.imageUrl || nft?.metadata.image || '';
 
   return (
-    <Link to={`/investor/${investorId || nft?.id.toString()}`}>
+    <Link to={`/startup/${startupId || nft?.id.toString()}`}>
       <div
         className="w-[288px] rounded-[15px] cursor-pointer transition-all duration-300 hover:scale-105 relative p-2 box-border"
         onMouseEnter={() => setHover(true)}
@@ -103,12 +104,12 @@ export const InvestorCard: FC<IInvestorCardProps> = ({ nft, investorId, investor
             className="flex flex-row items-center mb-[12px]"
             style={{ color: theme.colors.tertiaryText}}
           > 
-            {fundTypeIcons[fundType] || <FaBriefcase size={20} />}
+            {industryIcons[industry] || <FaIndustry size={20} />}
             <p 
               className="ml-[10px] font-epilogue font-medium text-[12px]"
               style={{ color: theme.colors.tertiaryText}}
             >
-              {fundType}
+              {industry}
             </p>
           </div>
           <h3 
@@ -124,13 +125,13 @@ export const InvestorCard: FC<IInvestorCardProps> = ({ nft, investorId, investor
                 className="font-epilogue font-semibold text-[14px] leading-[22px]"
                 style={{ color: theme.colors.secondaryText }}
               >
-                {headquarters}
+                {location}
               </h4>
               <p 
                 className="mt-[2px] font-epilogue font-normal text-[12px] leading-[18px] sm:max-w-[120px] truncate"
                 style={{ color: theme.colors.tertiaryText }}
               >
-                Headquarters
+                Location
               </p>
             </div>
             <div className="flex flex-col">
@@ -138,7 +139,7 @@ export const InvestorCard: FC<IInvestorCardProps> = ({ nft, investorId, investor
                 className="font-epilogue font-semibold text-[14px] leading-[22px]"
                 style={{ color: theme.colors.secondaryText }}
               >
-                {investmentStage}
+                {fundingStage}
               </h4>
               <p 
                 className="mt-[2px] font-epilogue font-normal text-[12px] leading-[18px] sm:max-w-[120px] truncate"
@@ -152,4 +153,4 @@ export const InvestorCard: FC<IInvestorCardProps> = ({ nft, investorId, investor
       </div>
     </Link>
   );
-};
+}; 

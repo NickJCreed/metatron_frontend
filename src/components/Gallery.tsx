@@ -10,8 +10,8 @@ import { getContractMetadata } from "thirdweb/extensions/common";
 import { getNFTs, totalSupply } from "thirdweb/extensions/erc721";
 import { useReadContract } from "thirdweb/react";
 import { Footer } from "@/components/Nav/Footer";
-import { NFTAttribute } from "@/types/nftTypes";
 
+// Define a mapping for component types
 const componentMap: { [key: string]: React.FC<any> } = {
   startup: NFTCard,
   investor: InvestorCard,
@@ -47,7 +47,7 @@ const Gallery: React.FC<GalleryProps> = ({
     start: Number(start),
   });
 
-  const { data: totalCount, refetch: refetchTotalCount } = useReadContract(totalSupply, {
+  const { data: totalCountData, refetch: refetchTotalCount } = useReadContract(totalSupply, {
     contract: contract,
   });
 
@@ -57,51 +57,25 @@ const Gallery: React.FC<GalleryProps> = ({
     });
 
   useEffect(() => {
-    if (totalCount !== undefined && !debouncedSearchTerm) {
-      setTotalCount(Number(totalCount));
+    if (totalCountData !== undefined && !debouncedSearchTerm) {
+      setTotalCount(Number(totalCountData));
     }
-  }, [totalCount, setTotalCount, debouncedSearchTerm]);
+  }, [totalCountData, setTotalCount, debouncedSearchTerm]);
 
   useEffect(() => {
     if (debouncedSearchTerm) {
+      // Implement Firestore search if applicable
+      // For now, continue with client-side filtering
       const filteredResults = nfts?.filter((nft: NFT) =>
         nft.metadata.name?.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
       );
       setFilteredNFTs(filteredResults || []);
       setTotalCount(filteredResults ? filteredResults.length : 0);
+      setPage(1); // Reset to first page when searching
     } else {
       setFilteredNFTs(nfts || []);
-      setTotalCount(nfts ? nfts.length : 0);
     }
-  }, [debouncedSearchTerm, nfts, setTotalCount]);  
-
-  useEffect(() => {
-    setPage(1); // Reset page when contract changes
-  }, [contract, setPage]);
-
-  useEffect(() => {
-    refetchNFTs();
-    refetchTotalCount();
-    refetchContractMetadata();
-  }, [contract, page, refetchNFTs, refetchTotalCount, refetchContractMetadata]);
-
-  const mapNFTToProps = (nft: NFT) => {
-    if (type === "startup") {
-      const startupName = nft.metadata.name || "Unknown Startup";
-      const fundingStage = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Funding Range")?.value || "Unknown";
-      const location = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Location")?.value || "Unknown Location";
-      const category = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Industry")?.value || "Technology";
-
-      return { nft, startupName, fundingStage, location, category };
-    } else if (type === "investor") {
-      const investorName = nft.metadata.name || "Unknown Investor";
-      const hq = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Location")?.value || "Unknown HQ";
-      const investmentStage = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Funding Range")?.value || "Unknown Stage";
-      const fundType = (nft.metadata.attributes as unknown as NFTAttribute[])?.find((attr) => attr.trait_type === "Funding Types")?.value || "Unknown Fund Type";
-
-      return { nft, investorName, hq, investmentStage, fundType };
-    }
-  };
+  }, [debouncedSearchTerm, nfts, setTotalCount, setPage]);
 
   const CardComponent = componentMap[type];
 
@@ -153,18 +127,25 @@ const Gallery: React.FC<GalleryProps> = ({
         ) : (
           <div className="mx-auto flex flex-wrap items-center justify-center gap-8 px-4 md:px-8 lg:px-16">
             {filteredNFTs.map((nft) => (
-              <CardComponent {...mapNFTToProps(nft)} key={nft.id.toString()} />
+              <CardComponent 
+                nft={nft} 
+                startupName={nft.metadata.startupName} 
+                fundingStage={nft.metadata.fundingStage}
+                location={nft.metadata.location}
+                category={nft.metadata.category}
+                key={nft.id.toString()} 
+              />
             ))}
           </div>
         )}
 
         <Footer   
-         page={page}
-         setPage={setPage}
-         nftsPerPage={nftsPerPage}
-         totalCount={Number(totalCount)}
-         loading={isLoading} 
-         />
+          page={page}
+          setPage={setPage}
+          nftsPerPage={nftsPerPage}
+          totalCount={Number(totalCountData)}
+          loading={isLoading} 
+        />
       </div>
     </div>
   );

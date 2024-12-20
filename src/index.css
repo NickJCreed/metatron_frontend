@@ -64,3 +64,8 @@ object-fit: cover; /* Ensure the image covers the entire container */
   opacity: 1;
 }
 
+/* Example Tailwind CSS classes for gold button */
+.bg-gold-500 {
+  background-color: #FFD700; /* Gold color */
+}
+
