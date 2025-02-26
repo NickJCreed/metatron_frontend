@@ -1,120 +1,92 @@
-import { client } from "@/consts/parameters";
-import React, { FC, useState, useEffect } from 'react';
+import { useTheme } from "@/context/ThemeProvider"; 
+import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { NFT } from 'thirdweb';
 import { MediaRenderer } from 'thirdweb/react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
-import { FaIndustry, FaMapMarkerAlt, FaChartLine } from 'react-icons/fa';
-import { useTheme } from "@/context/ThemeProvider";
-import { db } from '@/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { FaHandsHelping, FaChartLine, FaSeedling, FaTree, FaMoneyBill, FaLaptopCode } from 'react-icons/fa';
+import { useAuth } from '@/context/AuthProvider';
+import { client } from '@/consts/parameters';
 
-interface StartupCardProps {
-  nft?: NFT;
-  startupId?: string;
-  startupData?: {
-    name: string;
-    location: string;
-    fundingStage: string;
-    industry: string;
-    description: string;
-    imageUrl: string;
-  };
+interface IStartupCardProps {
+  nft: NFT;
+  startupName?: string;
+  fundingStage?: string;
+  location?: string;
+  category?: string;
 }
 
-const industryIcons: { [key: string]: JSX.Element } = {
-  'Artificial Intelligence': <FaIndustry size={20} />,
-  'Clean Energy': <FaIndustry size={20} />,
-  'Technology': <FaIndustry size={20} />,
+const categoryIcons: { [key: string]: JSX.Element } = {
+  Service: <FaHandsHelping size={20} />,
+  Fintech: <FaChartLine size={20} />,
+  Agriculture: <FaSeedling size={20} />,
+  Conservation: <FaTree size={20} />,
+  Finance: <FaMoneyBill size={20} />,
+  Software: <FaLaptopCode size={20} />,
+  // Add more categories and icons as needed
 };
 
-export const StartupCard: FC<StartupCardProps> = ({ nft, startupId, startupData: initialStartupData }) => {
+export const StartupCard: FC<IStartupCardProps> = ({ nft, startupName, fundingStage, location, category }) => {
   const { theme } = useTheme();
-  const [hover, setHover] = useState<boolean>(false);
-  const [favorite, setFavorite] = useState<boolean>(false);
-  const [startupData, setStartupData] = useState(initialStartupData);
+  const { watchlist, toggleFavorite } = useAuth();
+  const isFavorited = watchlist.includes(nft.id.toString());
 
-  useEffect(() => {
-    const fetchStartupData = async () => {
-      if (startupId && !startupData) {
-        try {
-          const startupDoc = await getDoc(doc(db, 'startups', startupId));
-          if (startupDoc.exists()) {
-            setStartupData(startupDoc.data() as any);
-          }
-        } catch (error) {
-          console.error('Error fetching startup data:', error);
-        }
-      }
-    };
+  console.log('NFT Data:', { startupName, fundingStage, location, category });
 
-    fetchStartupData();
-  }, [startupId, startupData]);
-
-  const toggleFavorite = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setFavorite(!favorite);
-  };
-
-  if (!startupData && !nft) {
-    return null;
-  }
-
-  const name = startupData?.name || nft?.metadata.name || '';
-  const location = startupData?.location || '';
-  const fundingStage = startupData?.fundingStage || '';
-  const industry = startupData?.industry || '';
-  const imageUrl = startupData?.imageUrl || nft?.metadata.image || '';
+  const name = startupName || nft.metadata.name || '';
 
   return (
-    <Link to={`/startup/${startupId || nft?.id.toString()}`}>
+    <Link to={`/nft/${nft.id.toString()}`}>
       <div
         className="w-[288px] rounded-[15px] cursor-pointer transition-all duration-300 hover:scale-105 relative p-2 box-border"
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
         style={{ height: '360px', backgroundColor: theme.colors.modalBg }}
       >
-        <div className="image-container" style={{ height: '45%', padding: '5px', backgroundColor: theme.colors.modalBg, borderRadius: '5px' }}>
+        {/* Image container taking up 60% of the card's height */}
+        <div 
+          className="image-container" 
+          style={{ 
+            height: '60%', 
+            padding: '0px',  
+            backgroundColor: theme.colors.modalBg, 
+            borderRadius: '5px' 
+          }}
+        >
           <div className="relative image-wrapper h-full w-full">
-            {nft ? (
-              <MediaRenderer
-                client={client}
-                src={imageUrl}
-                className="image rounded-[12px] w-full h-full object-cover"
-              />
-            ) : (
-              <img
-                src={imageUrl}
-                alt={name}
-                className="image rounded-[12px] w-full h-full object-cover"
-              />
-            )}
+            <MediaRenderer
+              client={client}
+              src={nft.metadata.image}
+              className="image rounded-[12px] w-full h-full object-cover"
+              alt={name}
+            />
             <div 
               className="absolute top-3 right-3 cursor-pointer"
               style={{ color: theme.colors.accentButtonText }}
-              onClick={toggleFavorite}
+              onClick={(e) => {
+                e.preventDefault();
+                toggleFavorite(nft.id.toString());
+              }}
             >
-              {favorite ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
+              {isFavorited ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
             </div>
           </div>
         </div>
         
         <div className="p-3" style={{ height: '40%' }}>
           <div 
-            className="flex flex-row items-center mb-[12px]"
-            style={{ color: theme.colors.tertiaryText}}
-          > 
-            {industryIcons[industry] || <FaIndustry size={20} />}
+            className="flex flex-row items-center mb-[12px]" 
+            style={{ color: theme.colors.tertiaryText }}
+          >
+            {category ? categoryIcons[category] : <FaHandsHelping size={20} />}
             <p 
               className="ml-[10px] font-epilogue font-medium text-[12px]"
-              style={{ color: theme.colors.tertiaryText}}
+              style={{ color: theme.colors.secondaryText }}
             >
-              {industry}
+              {category}
             </p>
           </div>
           <h3 
             className="font-epilogue font-semibold text-[16px] text-left leading-[24px] truncate"
-            style={{ color: theme.colors.primaryText}}
+            style={{ color: theme.colors.primaryText }}
           >
             {name}
           </h3>
@@ -129,7 +101,7 @@ export const StartupCard: FC<StartupCardProps> = ({ nft, startupId, startupData:
               </h4>
               <p 
                 className="mt-[2px] font-epilogue font-normal text-[12px] leading-[18px] sm:max-w-[120px] truncate"
-                style={{ color: theme.colors.tertiaryText }}
+                style={{ color: theme.colors.secondaryText }}
               >
                 Location
               </p>
@@ -143,9 +115,9 @@ export const StartupCard: FC<StartupCardProps> = ({ nft, startupId, startupData:
               </h4>
               <p 
                 className="mt-[2px] font-epilogue font-normal text-[12px] leading-[18px] sm:max-w-[120px] truncate"
-                style={{ color: theme.colors.tertiaryText }}
+                style={{ color: theme.colors.secondaryText }}
               >
-                Stage
+                Funding Stage
               </p>
             </div>
           </div>
@@ -153,4 +125,4 @@ export const StartupCard: FC<StartupCardProps> = ({ nft, startupId, startupData:
       </div>
     </Link>
   );
-}; 
+};

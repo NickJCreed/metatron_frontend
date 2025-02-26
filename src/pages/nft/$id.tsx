@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "@/context/ThemeProvider"; 
 import { useParams, useNavigate } from "react-router-dom";
 import { HistoryCard } from "@/components/HistoryCard";
@@ -9,8 +9,8 @@ import {
   useContractEvents,
   useReadContract,
 } from "thirdweb/react";
-
-import { getNFT, transferEvent } from "thirdweb/extensions/erc721";
+import { FaArrowLeft, FaArrowRight, FaTimes } from 'react-icons/fa';
+import { getNFT, transferEvent, totalSupply } from "thirdweb/extensions/erc721";
 import { getContractMetadata } from "thirdweb/extensions/common";
 import { useAuth } from "@/context/AuthProvider"; 
 import { useContract } from "@/context/ContractProvider";
@@ -22,6 +22,7 @@ const NFTPage = () => {
   const { theme } = useTheme();
   const { contract } = useContract();
   const { isAuthorized } = useAuth();
+  const [totalNFTs, setTotalNFTs] = useState<number>(0);
 
   const { data: nft, isLoading, error } = useReadContract(getNFT, {
     contract: contract,
@@ -39,9 +40,19 @@ const NFTPage = () => {
     ],
   });
 
+  const { data: totalSupplyData } = useReadContract(totalSupply, {
+    contract: contract,
+  });
+
+  useEffect(() => {
+    if (totalSupplyData) {
+      setTotalNFTs(Number(totalSupplyData));
+    }
+  }, [totalSupplyData]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     if (error) {
@@ -57,11 +68,52 @@ const NFTPage = () => {
     return attribute ? attribute.value : "N/A";
   };
 
+  const handleBack = () => {
+    navigate('/');
+  };
+
+  const handleNextNFT = () => {
+    const nextId = (parseInt(id as string) + 1) % totalNFTs;
+    navigate(`/nft/${nextId || totalNFTs}`);
+  };
+
+  const handlePrevNFT = () => {
+    const prevId = parseInt(id as string) - 1 <= 0 
+      ? totalNFTs 
+      : parseInt(id as string) - 1;
+    
+    navigate(`/nft/${prevId}`);
+  };
+
   return (
     <div className="m-0 mt-10 min-h-screen p-8 pb-20 font-inter text-neutral-200" style={{background: theme.colors.secondaryBg}}>
       {/* <Helmet>
         <title style={{color: theme.colors.primaryText}}>{nft?.metadata.name || "NFT Profile"}</title>
       </Helmet> */}
+
+      {/* Navigation Controls */}
+      <div className="fixed top-24 right-4 z-10 flex space-x-2">
+        <button 
+          onClick={handlePrevNFT}
+          className="rounded-full bg-black bg-opacity-50 p-2 text-white hover:bg-opacity-70 transition-all duration-300"
+        >
+          <FaArrowLeft size={20} />
+        </button>
+
+        <button 
+          onClick={handleNextNFT}
+          className="rounded-full bg-black bg-opacity-50 p-2 text-white hover:bg-opacity-70 transition-all duration-300"
+        >
+          <FaArrowRight size={20} />
+        </button>
+
+        <button 
+          onClick={handleBack}
+          className="rounded-full bg-black bg-opacity-50 p-2 text-white hover:bg-opacity-70 transition-all duration-300"
+        >
+          <FaTimes size={20} />
+        </button>
+      </div>
 
       <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col md:flex-row">
         <div className="flex flex-col md:min-h-screen md:w-1/2">

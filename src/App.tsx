@@ -13,7 +13,7 @@ import { usePagination } from "@/hooks/usePagination";
 import { startupContract, investorContract, connectorContract } from "@/consts/parameters";
 import { ThemeProvider } from "./context/ThemeProvider";
 import ConnectorsPage from "@/components/ConnectorsPage";
-import WatchlistPage from "@/pages/WatchlistPage";
+import ProfilePage from "@/pages/ProfilePage";
 
 const App: React.FC = () => {
   const { page, setPage, totalCount, setTotalCount, itemsPerPage } = usePagination();
@@ -69,7 +69,7 @@ const App: React.FC = () => {
                 <Route path="/investor/:id" element={<InvestorProfilePage />} />
                 <Route path="/vote" element={<VotingPage />} />
                 <Route path="/proposal/:id" element={<ProposalPage />} />
-                <Route path="/watchlist" element={<WatchlistPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
               </Routes>
             </Layout>
           </ThemeProvider>

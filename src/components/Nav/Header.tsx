@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { logo } from "@/assets";
 import { useAuth } from "@/context/AuthProvider";
 import SubscriptionModal from '../SubscriptionModal';
+import { FaTimes } from 'react-icons/fa';
 
 export const Header: React.FC = () => {
   const { theme } = useTheme(); 
@@ -25,15 +26,22 @@ export const Header: React.FC = () => {
   });
 
   const handleSubscribeClick = () => {
-    if (isAuthorized) {
-      setIsModalOpen(true);
-    } else {
-      alert("Please sign in to access subscription options");
-    }
+    setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  // Determine button text based on subscription status
+  const getButtonText = () => {
+    if (subscription === "Pro" || subscription === "Enterprise") {
+      return "Features";
+    } else if (subscription) {
+      return "Upgrade";
+    } else {
+      return "Subscribe";
+    }
   };
 
   return (
@@ -65,11 +73,11 @@ export const Header: React.FC = () => {
             onClick={handleSubscribeClick}
             className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md text-sm md:text-base transition-colors"
             style={{
-              backgroundColor: theme.colors.accent || '#F59E0B',
+              backgroundColor: theme.colors.accentButtonBg || '#F59E0B',
               color: '#FFFFFF'
             }}
           >
-            {isAuthorized ? (subscription ? 'Upgrade Plan' : 'Subscribe') : 'Subscribe'}
+            {getButtonText()}
           </button>
           <ConnectButton
             client={client}
@@ -81,12 +89,7 @@ export const Header: React.FC = () => {
               className: "text-sm md:text-base" 
             }}
           />
-          {isAuthorized && (
-            <>
-              <Link to="/watchlist" className="text-lg md:text-xl">❤️</Link>
-              <button className="text-lg md:text-xl">🔔</button>
-            </>
-          )}
+          {/* Watchlist button removed as requested */}
         </div>
       </header>
       
