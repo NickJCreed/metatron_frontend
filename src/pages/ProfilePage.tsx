@@ -10,6 +10,7 @@ import { getNFT } from "thirdweb/extensions/erc721";
 import { startupContract, investorContract, client, wallets } from "@/consts/parameters";
 import { NFT } from 'thirdweb';
 import { darkTheme, lightTheme } from "thirdweb/react";
+import Staking from '@/components/Staking';
 
 // Component for a single Startup NFT in the watchlist
 const WatchlistStartupItem: React.FC<{ id: string }> = ({ id }) => {
@@ -161,6 +162,10 @@ const ProfilePage: React.FC = () => {
                 <span className="text-green-500 mr-2">✓</span>
                 Participate in the Metatron community
               </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✓</span>
+                Stake tokens and earn rewards
+              </li>
             </ul>
           </div>
         </div>
@@ -184,6 +189,9 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Staking Section */}
+        <Staking />
 
         {/* Watchlist Section */}
         <div className="rounded-lg p-8" style={{ backgroundColor: theme.colors.modalBg }}>

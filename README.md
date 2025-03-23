@@ -12,12 +12,14 @@ Metatron DAO is revolutionizing the venture capital landscape by enabling startu
 - **Web3 Integration:** Seamlessly connect your Web3 wallet to interact with the platform and explore investment opportunities.
 - **RWA Tokenization:** For approved startups, access tools to tokenize real-world assets, opening new avenues for raising capital.
 - **Decentralized Governance:** Participate in onchain voting to verify startups and decide on funding allocations, ensuring transparency and community-driven decisions.
+- **Token Staking:** Stake METATRON tokens to earn rewards, enhancing participation in the ecosystem and providing additional utility to token holders.
 
 ## Tech Stack
 
 - **Frontend:** Built with [React](https://reactjs.org/), providing a modern, dynamic user interface.
 - **Blockchain Integration:** Powered by [Polygon](https://polygon.technology/) for high throughput and low-cost transactions.
 - **Web3 Wallet Connection:** Integrated with popular Web3 wallets like [MetaMask](https://metamask.io/) to enable seamless interactions with the blockchain.
+- **ThirdWeb SDK:** Leverage the ThirdWeb Connect SDK for seamless staking, token management, and smart contract interactions.
 
 ## Getting Started
 
@@ -35,3 +37,31 @@ git clone https://github.com/metatron-dao/frontend.git
 cd frontend
 npm install
 npm run dev
+
+```
+
+## Token Staking System
+
+The Metatron staking system allows users to stake their METATRON tokens and earn rewards over time. The staking system offers the following benefits:
+
+- **Passive Income:** Earn additional METATRON tokens based on the amount staked and duration
+- **Ecosystem Participation:** Active stakeholders can gain additional governance rights
+- **Reward Flexibility:** Claim rewards at any time or compound them by re-staking
+
+### How to Stake
+
+1. Connect your Web3 wallet on the Profile page
+2. Navigate to the "Your Rewards" section 
+3. View your available token balance, current staked amount, and pending rewards
+4. Click "Stake Tokens" to initiate the staking process
+5. Approve the token allowance transaction (first-time only)
+6. Enter the amount you wish to stake and confirm
+
+### How to Withdraw
+
+1. Navigate to the "Your Rewards" section on your Profile page
+2. Click "Withdraw Tokens" 
+3. Specify the amount you wish to withdraw
+4. Confirm the transaction
+
+Staking contract interactions are powered by the ThirdWeb Connect SDK and our custom ERC-20 staking contract.
