@@ -10,6 +10,7 @@ import { logo } from "@/assets";
 import { useAuth } from "@/context/AuthProvider";
 import SubscriptionModal from '../SubscriptionModal';
 import { FaTimes } from 'react-icons/fa';
+import { handleLogin } from '@/config/thirdwebAuth';
 
 export const Header: React.FC = () => {
   const { theme } = useTheme(); 
@@ -79,7 +80,10 @@ export const Header: React.FC = () => {
           >
             {getButtonText()}
           </button>
+
+
           <ConnectButton
+          onConnect={handleLogin}
             client={client}
             wallets={wallets}
             theme={customTheme}

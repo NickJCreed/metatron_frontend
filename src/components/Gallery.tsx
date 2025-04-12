@@ -175,9 +175,6 @@ const Gallery: React.FC<GalleryProps> = ({
                 placeholder="Search by project name"
                 className="w-full bg-transparent px-4 text-white focus:outline-none"
               />
-              <button className="ml-2 px-3 py-1 bg-blue-600 rounded" onClick={() => { /* You might trigger a manual search if desired */ }}>
-                Search
-              </button>
             </div>
           </div>
 

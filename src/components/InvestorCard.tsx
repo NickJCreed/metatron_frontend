@@ -6,7 +6,7 @@ import { MediaRenderer } from 'thirdweb/react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { FaBuilding, FaMoneyCheck, FaMapMarkerAlt, FaBriefcase } from 'react-icons/fa';
 import { useTheme } from "@/context/ThemeProvider";
-import { db } from '@/firebase';
+import { db } from '@/config/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { NFTAttribute } from '@/types/nftTypes';
 
