@@ -31,8 +31,6 @@ export const StartupCard: FC<IStartupCardProps> = ({ nft, startupName, fundingSt
   const { watchlist, toggleFavorite } = useAuth();
   const isFavorited = watchlist.includes(nft.id.toString());
 
-  console.log('NFT Data:', { startupName, fundingStage, location, category });
-
   const name = startupName || nft.metadata.name || '';
 
   return (

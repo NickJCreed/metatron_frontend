@@ -5,7 +5,7 @@ import { db } from "../config/firebase";
 export async function addInvestorToWatchlist(userId, investorId) {
     const userRef = doc(db, "users", userId);
     await updateDoc(userRef, {
-        watchlist: arrayUnion(investorId),
+        investorWatchlist: arrayUnion(investorId),
     });
 }
 
@@ -13,6 +13,18 @@ export async function addInvestorToWatchlist(userId, investorId) {
 export async function removeInvestorFromWatchlist(userId, investorId) {
     const userRef = doc(db, "users", userId);
     await updateDoc(userRef, {
-        watchlist: arrayRemove(investorId),
+        investorWatchlist: arrayRemove(investorId),
     });
+}
+
+// Fetch user's watchlist
+export async function getUserInvestorWatchlist(userId) {
+    const userRef = doc(db, "users", userId);
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+        return userDoc.data().investorWatchlist || []; 
+    } else {
+        throw new Error("User document not found");
+    }
 }
