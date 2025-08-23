@@ -2,7 +2,7 @@ import { useTheme } from "@/context/ThemeProvider";
 import { Footer } from "@/components/Nav/Footer";
 import { Header } from "@/components/Nav/Header";
 import Sidebar from "@/components/Nav/Sidebar";
-import { NFTCard } from "@/components/NFTCard";
+import { StartupCard } from "@/components/StartupCard";
 import { accessContract } from "@/consts/parameters";
 import useDebounce from "@/hooks/useDebounce";
 import { SearchIcon } from "@/icons/SearchIcon";
@@ -105,7 +105,7 @@ function App() {
         ) : null}
 
         {search && nft && !isSearching ? (
-          <NFTCard nft={nft} key={nft.id.toString()} />
+          <StartupCard nft={nft} key={nft.id.toString()} />
         ) : null}
 
         {isLoading && (
@@ -122,7 +122,7 @@ function App() {
         {nfts && !search && (
           <div className="flex flex-wrap items-center justify-center gap-8">
             {nfts.map((nft) => (
-              <NFTCard nft={nft} key={nft.id.toString()} />
+              <StartupCard nft={nft} key={nft.id.toString()} />
             ))}
           </div>
         )}

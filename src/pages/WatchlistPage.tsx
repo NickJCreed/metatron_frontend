@@ -1,41 +1,28 @@
-import React, { ReactNode, createContext, useContext, useState } from "react";
+import React from 'react';
+import { useAuth } from '@/context/AuthProvider';
+import ItemCard from '@/components/ItemCard';
 
-interface WatchlistContextProps {
-  watchlist: any[];
-  toggleFavorite: (item: any) => void;
-}
+const WatchlistPage: React.FC = () => {
+  const { isAuthorized, watchlist, toggleFavorite } = useAuth();
 
-interface WatchlistProviderProps {
-  children: ReactNode;
-}
-
-const WatchlistContext = createContext<WatchlistContextProps | undefined>(undefined);
-
-export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }) => {
-  const [watchlist, setWatchlist] = useState<any[]>([]);
-
-  const toggleFavorite = (item: any) => {
-    setWatchlist((prev) => {
-      const exists = prev.find((fav) => fav.id === item.id);
-      if (exists) {
-        return prev.filter((fav) => fav.id !== item.id);
-      } else {
-        return [...prev, item];
-      }
-    });
-  };
+  if (!isAuthorized) {
+    return <div>Please log in to view your watchlist.</div>;
+  }
 
   return (
-    <WatchlistContext.Provider value={{ watchlist, toggleFavorite }}>
-      {children}
-    </WatchlistContext.Provider>
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4">Your Watchlist</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {watchlist.length === 0 ? (
+          <p className="text-gray-500">Your watchlist is empty.</p>
+        ) : (
+          watchlist.map((itemId) => (
+            <ItemCard key={itemId} itemId={itemId} toggleFavorite={toggleFavorite} />
+          ))
+        )}
+      </div>
+    </div>
   );
 };
 
-export const useWatchlist = () => {
-  const context = useContext(WatchlistContext);
-  if (!context) {
-    throw new Error("useWatchlist must be used within a WatchlistProvider");
-  }
-  return context;
-};
+export default WatchlistPage;

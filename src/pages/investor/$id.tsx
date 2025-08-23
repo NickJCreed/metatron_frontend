@@ -1,12 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "@/context/ThemeProvider"; 
 import { useParams, useNavigate } from "react-router-dom"; 
 import { client } from "@/consts/parameters";
 import { Helmet } from "react-helmet-async";
 import { HistoryCard } from "@/components/HistoryCard";
 import { MediaRenderer, useReadContract, useContractEvents } from "thirdweb/react";
+import { FaArrowLeft, FaArrowRight, FaTimes } from 'react-icons/fa';
 import { NFTAttribute } from "@/types/nftTypes";
-import { getNFT, transferEvent } from "thirdweb/extensions/erc721";
+import { getNFT, transferEvent, totalSupply } from "thirdweb/extensions/erc721";
 import { getContractMetadata } from "thirdweb/extensions/common";
 import { investorContract } from "@/consts/parameters";
 import { useAuth } from "@/context/AuthProvider"; // Import useAuth
@@ -16,6 +17,7 @@ const InvestorProfilePage = () => {
   const { theme } = useTheme();
   const navigate = useNavigate(); 
   const { isAuthorized } = useAuth(); // Get authorization status
+  const [totalNFTs, setTotalNFTs] = useState<number>(0);
   
   const { data: nft, isLoading, error } = useReadContract(getNFT, {
     contract: investorContract,
@@ -35,6 +37,16 @@ const InvestorProfilePage = () => {
     ],
   });
 
+  const { data: totalSupplyData } = useReadContract(totalSupply, {
+    contract: investorContract,
+  });
+
+  useEffect(() => {
+    if (totalSupplyData) {
+      setTotalNFTs(Number(totalSupplyData));
+    }
+  }, [totalSupplyData]);
+
   useEffect(() => {
     if (error) {
       console.error("Error reading contract:", error);
@@ -43,7 +55,7 @@ const InvestorProfilePage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [id]);
 
   // Access attributes directly as defined by the thirdweb NFT type
   const getAttributeValue = (attributes: NFTAttribute[], traitType: string): string => {
@@ -51,12 +63,54 @@ const InvestorProfilePage = () => {
     return attribute ? String(attribute.value) : "Unknown";
   };
   
+  const handleBack = () => {
+    navigate('/investors');
+  };
+
+  const handleNextInvestor = () => {
+    const nextId = (parseInt(id as string) + 1) % totalNFTs;
+    navigate(`/investor/${nextId || totalNFTs}`);
+  };
+
+  const handlePrevInvestor = () => {
+    const prevId = parseInt(id as string) - 1 <= 0 
+      ? totalNFTs 
+      : parseInt(id as string) - 1;
+    
+    navigate(`/investor/${prevId}`);
+  };
+
+  const calendlyUrl = import.meta.env.VITE_CALENDLY_URL as string | undefined;
 
   return (
     <div className="m-0 mt-10 min-h-screen p-8 pb-20 font-inter text-neutral-200" style={{background: theme.colors.secondaryBg}}>
       {/* <Helmet>
         <title style={{color: theme.colors.primaryText}}>{nft?.metadata.name || "Investor Profile"}</title>
       </Helmet> */}
+
+      {/* Navigation Controls */}
+      <div className="fixed top-24 right-4 z-10 flex space-x-2">
+        <button 
+          onClick={handlePrevInvestor}
+          className="rounded-full bg-black bg-opacity-50 p-2 text-white hover:bg-opacity-70 transition-all duration-300"
+        >
+          <FaArrowLeft size={20} />
+        </button>
+
+        <button 
+          onClick={handleNextInvestor}
+          className="rounded-full bg-black bg-opacity-50 p-2 text-white hover:bg-opacity-70 transition-all duration-300"
+        >
+          <FaArrowRight size={20} />
+        </button>
+
+        <button 
+          onClick={handleBack}
+          className="rounded-full bg-black bg-opacity-50 p-2 text-white hover:bg-opacity-70 transition-all duration-300"
+        >
+          <FaTimes size={20} />
+        </button>
+      </div>
 
       <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col md:flex-row">
         <div className="flex flex-col px-10 md:min-h-screen md:w-1/2">
@@ -122,6 +176,21 @@ const InvestorProfilePage = () => {
               </p>
             )}
           </div>
+
+          {calendlyUrl && (
+            <div>
+              <a
+                href={calendlyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-4 py-2 rounded-md border border-gray-700 hover:bg-gray-700 transition-colors"
+                style={{ color: theme.colors.primaryText }}
+                data-testid="calendly-button"
+              >
+                Schedule a call
+              </a>
+            </div>
+          )}
 
           <div className="flex flex-col">
             <p 

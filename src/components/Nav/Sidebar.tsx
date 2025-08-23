@@ -83,7 +83,7 @@ const Sidebar: React.FC = () => {
         style={{ backgroundColor: theme.colors.tertiaryBg }}
         >
         {navlinks
-          .filter((link) => link.name !== 'logout' && link.name !== 'Toggle Theme') // Exclude some icons on mobile
+          .filter((link) => link.name !== 'logout') // Removed logout icon
           .map((link) => (
             <Icon
               key={link.name}

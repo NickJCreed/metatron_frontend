@@ -7,11 +7,14 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,md}\""
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,md}\"",
+    "setup-firestore": "ts-node src/scripts/setupFirestore.ts",
+    "test:puppeteer": "node tests/puppeteer.test.js"
   },
   "dependencies": {
+    "@thirdweb-dev/auth": "^4.1.97",
     "@thirdweb-dev/sdk": "^4.0.99",
-    "firebase": "^11.1.0",
+    "firebase": "^11.8.1",
     "react": "^18.3",
     "react-dom": "^18.3",
     "react-helmet-async": "^2.0.5",
@@ -20,6 +23,7 @@
     "thirdweb": "^5.23.0"
   },
   "devDependencies": {
+    "@types/node": "^24.3.0",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
     "@types/react-helmet": "^6.1.11",
@@ -28,6 +32,7 @@
     "postcss": "^8.4.38",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.14",
+    "puppeteer": "^24.17.0",
     "tailwindcss": "^3.4.3",
     "typescript": "^5",
     "vite": "^5.2.11",
