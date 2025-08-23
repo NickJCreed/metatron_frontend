@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from "@/context/ThemeProvider"; 
 import { client, startupContract, wallets } from "@/consts/parameters";
 import { getContractMetadata } from "thirdweb/extensions/common";
 import { getNFT } from "thirdweb/extensions/erc721";
-import { ConnectButton, useReadContract } from "thirdweb/react";
+import { ConnectButton, useReadContract, useActiveAccount } from "thirdweb/react";
 import { generateThirdWebTheme } from "@/utils/thirdwebTheme";
 import { Link } from "react-router-dom";
 import { logo } from "@/assets";
@@ -11,6 +11,8 @@ import { useAuth } from "@/context/AuthProvider";
 import SubscriptionModal from '../SubscriptionModal';
 import { FaTimes } from 'react-icons/fa';
 import { handleLogin } from '@/config/thirdwebAuth';
+import { db } from "@/config/firebase";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export const Header: React.FC = () => {
   const { theme } = useTheme(); 
@@ -26,6 +28,21 @@ export const Header: React.FC = () => {
     contract: startupContract,
   });
 
+  const account = useActiveAccount();
+
+  useEffect(() => {
+    if (account?.address) {
+      const userRef = doc(db, "users", account.address);
+      getDoc(userRef).then((docSnap) => {
+        if (!docSnap.exists()) {
+          setDoc(userRef, { createdAt: new Date().toISOString() });
+        } else {
+          console.log("User data:", docSnap.data());
+        }
+      });
+    }
+  }, [account?.address]);
+
   const handleSubscribeClick = () => {
     setIsModalOpen(true);
   };
@@ -37,7 +54,7 @@ export const Header: React.FC = () => {
   // Determine button text based on subscription status
   const getButtonText = () => {
     if (subscription === "Pro" || subscription === "Enterprise") {
-      return "Features";
+      return "Pro";
     } else if (subscription) {
       return "Upgrade";
     } else {

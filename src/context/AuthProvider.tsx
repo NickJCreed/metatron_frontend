@@ -1,9 +1,8 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
-import { auth, db, functions } from "@/config/firebase";
+import { auth, db } from "@/config/firebase";
 import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { useActiveAccount } from "thirdweb/react";
-import { httpsCallable } from "firebase/functions";
 import { fetchUserData, updateUserSubscription, addToWatchlist, removeFromWatchlist } from "@/utils/firestoreUtils";
 
 interface AuthContextType {
@@ -177,29 +176,45 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (!userId) return;
 
     try {
-      // Call a Firebase Function to handle Stripe subscription
-      const subscribeFunction = httpsCallable(functions, 'subscribeUser');
-      const result = await subscribeFunction({ userId, tier });
-      
-      // Update subscription in Firestore
-      await updateDoc(doc(db, "subscriptions", userId), {
-        tier,
-        lastPaid: new Date(),
-        validity: new Date(new Date().setMonth(new Date().getMonth() + 1)), // Example: 1 month validity
+      // Map UI tiers to backend plan keys
+      const planMap: Record<string, string> = {
+        'Free': 'free',
+        'Basic': 'basic',
+        'Pro': 'pro',
+        'Pro VDR': 'enterprise',
+      };
+      const plan = planMap[tier] || 'basic';
+
+      // Build Functions endpoint (emulator in dev, prod otherwise)
+      const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID as string;
+      const baseUrl = window.location.hostname === 'localhost'
+        ? `http://localhost:5001/${projectId}/us-central1/api`
+        : `https://us-central1-${projectId}.cloudfunctions.net/api`;
+
+      const res = await fetch(`${baseUrl}/create-checkout-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan, userId }),
       });
 
-      setSubscription(tier);
-      setSubscriptionDetails({
-        tier,
-        lastPaid: new Date(),
-        validity: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      });
+      if (!res.ok) {
+        throw new Error(`Failed to create checkout session: ${res.status}`);
+      }
 
-      // Update user document if necessary
-      await updateDoc(doc(db, "users", userId), {
-        subscription: tier,
-      });
+      const data = await res.json();
 
+      if (plan === 'free') {
+        // Free plan handled immediately
+        await updateDoc(doc(db, "users", userId), { subscription: 'Free' });
+        setSubscription('Free');
+        setSubscriptionDetails(null);
+        return;
+      }
+
+      if (data.checkoutUrl) {
+        // Redirect to Stripe Checkout
+        window.location.href = data.checkoutUrl as string;
+      }
     } catch (error) {
       console.error("Error subscribing:", error);
     }

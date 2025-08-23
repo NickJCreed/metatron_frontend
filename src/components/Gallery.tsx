@@ -174,6 +174,7 @@ const Gallery: React.FC<GalleryProps> = ({
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by project name"
                 className="w-full bg-transparent px-4 text-white focus:outline-none"
+                data-testid="gallery-search"
               />
             </div>
           </div>
@@ -195,13 +196,23 @@ const Gallery: React.FC<GalleryProps> = ({
         />
 
         {isLoading ? (
-          <div className="mx-auto flex flex-wrap items-center justify-center gap-8 px-4 md:px-8 lg:px-16">
+          <div
+            className="mx-auto flex flex-wrap items-center justify-center gap-8 px-4 md:px-8 lg:px-16"
+            role="grid"
+            id="gallery"
+            data-testid="gallery"
+          >
             {Array.from({ length: Math.min(nftsPerPage, 4) }).map((_, i) => (
               <div className="!h-60 !w-60 animate-pulse rounded-lg bg-gray-800" key={i} />
             ))}
           </div>
         ) : (
-          <div className="mx-auto flex flex-wrap items-center justify-center gap-8 px-4 md:px-8 lg:px-16">
+          <div
+            className="mx-auto flex flex-wrap items-center justify-center gap-8 px-4 md:px-8 lg:px-16"
+            role="grid"
+            id="gallery"
+            data-testid="gallery"
+          >
             {filteredNFTs.map((nft) => {
               const attributes = Array.isArray(nft.metadata.attributes) ? nft.metadata.attributes : [];
               const { startupName, fundingStage, location, category } = mapAttributesToProps(attributes as NFTAttribute[]);

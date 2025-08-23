@@ -80,6 +80,8 @@ const InvestorProfilePage = () => {
     navigate(`/investor/${prevId}`);
   };
 
+  const calendlyUrl = import.meta.env.VITE_CALENDLY_URL as string | undefined;
+
   return (
     <div className="m-0 mt-10 min-h-screen p-8 pb-20 font-inter text-neutral-200" style={{background: theme.colors.secondaryBg}}>
       {/* <Helmet>
@@ -174,6 +176,21 @@ const InvestorProfilePage = () => {
               </p>
             )}
           </div>
+
+          {calendlyUrl && (
+            <div>
+              <a
+                href={calendlyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-4 py-2 rounded-md border border-gray-700 hover:bg-gray-700 transition-colors"
+                style={{ color: theme.colors.primaryText }}
+                data-testid="calendly-button"
+              >
+                Schedule a call
+              </a>
+            </div>
+          )}
 
           <div className="flex flex-col">
             <p 

@@ -38,6 +38,9 @@ export const StartupCard: FC<IStartupCardProps> = ({ nft, startupName, fundingSt
       <div
         className="w-[288px] rounded-[15px] cursor-pointer transition-all duration-300 hover:scale-105 relative p-2 box-border"
         style={{ height: '360px', backgroundColor: theme.colors.modalBg }}
+        role="gridcell"
+        data-testid="gallery-card"
+        data-nft-id={nft.id.toString()}
       >
         {/* Image container taking up 60% of the card's height */}
         <div 

@@ -126,6 +126,9 @@ export const InvestorCard: FC<IInvestorCardProps> = ({ nft, investorId, investor
         style={{ height: '360px', backgroundColor: theme.colors.modalBg }}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
+        role="gridcell"
+        data-testid="gallery-card"
+        data-nft-id={(investorId || nft?.id?.toString() || '')}
       >
         <div className="image-container" style={{ height: '50%', padding: '0px', backgroundColor: theme.colors.modalBg, borderRadius: '5px' }}>
           <div className="relative image-wrapper h-full w-full">
