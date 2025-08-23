@@ -14,6 +14,9 @@ import { startupContract, investorContract, connectorContract } from "@/consts/p
 import { ThemeProvider } from "./context/ThemeProvider";
 import ConnectorsPage from "@/components/ConnectorsPage";
 import ProfilePage from "@/pages/ProfilePage";
+import Login from "@/components/Login";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import LandingPage from "@/components/LandingPage";
 
 const App: React.FC = () => {
   const { page, setPage, totalCount, setTotalCount, itemsPerPage } = usePagination();
@@ -23,55 +26,104 @@ const App: React.FC = () => {
       <ContractProvider>
         <AuthProvider>
           <ThemeProvider>
-            <Layout>
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <Gallery
-                      contract={startupContract}
-                      page={page}
-                      setPage={setPage}
-                      nftsPerPage={itemsPerPage}
-                      setTotalCount={setTotalCount}
-                      type="startup"
-                    />
-                  }
-                />
-                <Route
-                  path="/investors"
-                  element={
-                    <Gallery
-                      contract={investorContract}
-                      page={page}
-                      setPage={setPage}
-                      nftsPerPage={itemsPerPage}
-                      setTotalCount={setTotalCount}
-                      type="investor"
-                    />
-                  }
-                />
-                <Route
-                  path="/connectors"
-                  element={
-                    // <Gallery
-                    //   contract={connectorContract}
-                    //   page={page}
-                    //   setPage={setPage}
-                    //   nftsPerPage={itemsPerPage}
-                    //   setTotalCount={setTotalCount}
-                    //   type="connector"
-                    // />
-                    <ConnectorsPage />
-                  }
-                />
-                <Route path="/nft/:id" element={<NFTPage />} />
-                <Route path="/investor/:id" element={<InvestorProfilePage />} />
-                <Route path="/vote" element={<VotingPage />} />
-                <Route path="/proposal/:id" element={<ProposalPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-              </Routes>
-            </Layout>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <Gallery
+                        contract={startupContract}
+                        page={page}
+                        setPage={setPage}
+                        nftsPerPage={itemsPerPage}
+                        setTotalCount={setTotalCount}
+                        type="startup"
+                      />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/investors"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <Gallery
+                        contract={investorContract}
+                        page={page}
+                        setPage={setPage}
+                        nftsPerPage={itemsPerPage}
+                        setTotalCount={setTotalCount}
+                        type="investor"
+                      />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/deal-makers"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <ConnectorsPage />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route 
+                path="/nft/:id" 
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <NFTPage />
+                    </Layout>
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/investor/:id" 
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <InvestorProfilePage />
+                    </Layout>
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/vote" 
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <VotingPage />
+                    </Layout>
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/proposal/:id" 
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <ProposalPage />
+                    </Layout>
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <ProfilePage />
+                    </Layout>
+                  </ProtectedRoute>
+                } 
+              />
+            </Routes>
           </ThemeProvider>
         </AuthProvider>
       </ContractProvider>
