@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { auth, db } from '@/config/firebase';
+import { useTheme } from '../context/ThemeProvider';
+import { auth, db } from '../config/firebase';
 import { 
   signInWithPopup, 
   GoogleAuthProvider, 
@@ -10,66 +11,61 @@ import {
   createUserWithEmailAndPassword
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
-import { useTheme } from '@/context/ThemeProvider';
 
-const Login: React.FC = () => {
+interface LoginProps {
+  onNavigate: (page: string) => void;
+}
+
+const Login: React.FC<LoginProps> = ({ onNavigate }) => {
   const { theme } = useTheme();
-  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<'Investor' | 'Founder' | 'Connector'>('Investor');
+  const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
 
-  const handleSocialLogin = async (provider: any, providerName: string) => {
-    setLoading(true);
-    setError('');
-    
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      
-      // Check if user exists in Firestore
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      
-      if (!userDoc.exists()) {
-        // Create new user document
-        await setDoc(doc(db, 'users', user.uid), {
-          email: user.email,
-          displayName: user.displayName || '',
-          photoURL: user.photoURL || '',
-          role: 'Investor', // Default role
-          subscription: 'Free',
-          watchlist: [],
-          createdAt: new Date(),
-          provider: providerName
-        });
-      }
-      
-      navigate('/dashboard');
-    } catch (error: any) {
-      console.error('Social login error:', error);
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleEmailAuth = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
-    
+    if (!email || !password) {
+      setError('Please fill in all fields');
+      return;
+    }
+
     try {
+      setLoading(true);
+      setError('');
+      
       if (isSignUp) {
-        await createUserWithEmailAndPassword(auth, email, password);
-        // User creation will be handled by AuthProvider
+        // Sign up
+        const result = await createUserWithEmailAndPassword(auth, email, password);
+        
+        // Save user data to Firestore
+        await setDoc(doc(db, 'users', result.user.uid), {
+          uid: result.user.uid,
+          email: result.user.email,
+          createdAt: new Date(),
+          role: 'user',
+          subscription: 'free'
+        });
+        
+        console.log('Successfully signed up');
+        setError('Account created successfully! Redirecting to dashboard...');
+        
+        // Redirect to dashboard after successful signup
+        setTimeout(() => {
+          onNavigate('dashboard');
+        }, 2000);
       } else {
+        // Sign in
         await signInWithEmailAndPassword(auth, email, password);
+        console.log('Successfully signed in');
+        setError('Sign in successful! Redirecting to dashboard...');
+        
+        // Redirect to dashboard after successful signin
+        setTimeout(() => {
+          onNavigate('dashboard');
+        }, 2000);
       }
-      navigate('/dashboard');
     } catch (error: any) {
       console.error('Email auth error:', error);
       setError(error.message);
@@ -78,179 +74,196 @@ const Login: React.FC = () => {
     }
   };
 
-  const socialProviders = [
-    {
-      name: 'Google',
-      provider: new GoogleAuthProvider(),
-      color: 'bg-red-500 hover:bg-red-600',
-      icon: '🔍'
-    },
-    {
-      name: 'Facebook',
-      provider: new FacebookAuthProvider(),
-      color: 'bg-blue-600 hover:bg-blue-700',
-      icon: '📘'
-    },
-    {
-      name: 'Twitter',
-      provider: new TwitterAuthProvider(),
-      color: 'bg-blue-400 hover:bg-blue-500',
-      icon: '🐦'
-    },
-    {
-      name: 'GitHub',
-      provider: new GithubAuthProvider(),
-      color: 'bg-gray-800 hover:bg-gray-900',
-      icon: '🐙'
+  const handleSocialLogin = async (provider: any, providerName: string) => {
+    try {
+      setLoading(true);
+      setError('');
+      const result = await signInWithPopup(auth, provider);
+      
+      // Save user data to Firestore
+      if (result.user) {
+        const userRef = doc(db, 'users', result.user.uid);
+        const userDoc = await getDoc(userRef);
+        
+        if (!userDoc.exists()) {
+          // New user - create profile
+          await setDoc(userRef, {
+            uid: result.user.uid,
+            email: result.user.email,
+            displayName: result.user.displayName,
+            photoURL: result.user.photoURL,
+            provider: providerName,
+            createdAt: new Date(),
+            role: 'user',
+            subscription: 'free'
+          });
+        }
+      }
+      
+      console.log('Successfully signed in with', providerName);
+      setError(`Successfully signed in with ${providerName}! Redirecting to dashboard...`);
+      
+      // Redirect to dashboard after successful social login
+      setTimeout(() => {
+        onNavigate('dashboard');
+      }, 2000);
+    } catch (error: any) {
+      console.error('Social login error:', error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const googleProvider = new GoogleAuthProvider();
+  const facebookProvider = new FacebookAuthProvider();
+  const twitterProvider = new TwitterAuthProvider();
+  const githubProvider = new GithubAuthProvider();
 
   return (
-    <div className={`min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300 ${
-      theme.type === 'dark' 
-        ? 'bg-gradient-to-br from-gray-900 to-gray-800' 
-        : 'bg-gradient-to-br from-gray-300 to-gray-400'
-    }`}>
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold transition-colors duration-300" style={{ color: theme.colors.primaryText }}>
-            {isSignUp ? 'Create your account' : 'Sign in to your account'}
+    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: theme.colors.secondaryBg }}>
+      <div className="max-w-md w-full space-y-8 p-8 rounded-lg" style={{ backgroundColor: theme.colors.modalBg }}>
+        <div className="text-center">
+          <h2 className="text-3xl font-bold" style={{ color: theme.colors.primaryText }}>
+            Welcome to metatron
           </h2>
-          <p className="mt-2 text-center text-sm transition-colors duration-300" style={{ color: theme.colors.secondaryText }}>
-            {isSignUp ? 'Join metatron to access exclusive content' : 'Welcome back to metatron'}
+          <p className="mt-2 text-sm" style={{ color: theme.colors.secondaryText }}>
+            {isSignUp ? 'Create your account' : 'Sign in to your account'}
           </p>
         </div>
         
-        <div className="mt-8 space-y-6">
-          {/* Social Login Buttons */}
-          <div className="space-y-3">
-            {socialProviders.map((social) => (
-              <button
-                key={social.name}
-                onClick={() => handleSocialLogin(social.provider, social.name)}
-                disabled={loading}
-                className={`w-full flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white ${social.color} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed`}
-              >
-                <span className="mr-2">{social.icon}</span>
-                Continue with {social.name}
-              </button>
-            ))}
+        {/* Social Login Buttons */}
+        <div className="space-y-3">
+          <button
+            onClick={() => handleSocialLogin(googleProvider, 'Google')}
+            disabled={loading}
+            className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          >
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5 mr-2" />
+            Continue with Google
+          </button>
+          
+          <button
+            onClick={() => handleSocialLogin(facebookProvider, 'Facebook')}
+            disabled={loading}
+            className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          >
+            <span className="text-blue-600 mr-2">📘</span>
+            Continue with Facebook
+          </button>
+          
+          <button
+            onClick={() => handleSocialLogin(twitterProvider, 'Twitter')}
+            disabled={loading}
+            className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          >
+            <span className="text-blue-400 mr-2">🐦</span>
+            Continue with Twitter
+          </button>
+          
+          <button
+            onClick={() => handleSocialLogin(githubProvider, 'GitHub')}
+            disabled={loading}
+            className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          >
+            <span className="text-blue-800 mr-2">🐙</span>
+            Continue with GitHub
+          </button>
+        </div>
+        
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t" style={{ borderColor: theme.colors.borderColor }} />
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2" style={{ backgroundColor: theme.colors.modalBg, color: theme.colors.secondaryText }}>
+              Or continue with email
+            </span>
+          </div>
+        </div>
+        
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium" style={{ color: theme.colors.primaryText }}>
+              Email address
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{
+                backgroundColor: theme.colors.modalBg,
+                borderColor: theme.colors.borderColor,
+                color: theme.colors.primaryText
+              }}
+              placeholder="Enter your email"
+            />
           </div>
           
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 transition-colors duration-300" style={{ 
-                backgroundColor: theme.colors.secondaryBg,
-                color: theme.colors.tertiaryText 
-              }}>
-                Or continue with email
-              </span>
-            </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium" style={{ color: theme.colors.primaryText }}>
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{
+                backgroundColor: theme.colors.modalBg,
+                borderColor: theme.colors.borderColor,
+                color: theme.colors.primaryText
+              }}
+              placeholder="Enter your password"
+            />
           </div>
-
-          {/* Email/Password Form */}
-          <form className="mt-8 space-y-6" onSubmit={handleEmailAuth}>
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="email" className="sr-only">
-                  Email address
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none rounded-md relative block w-full px-3 py-2 border focus:outline-none focus:z-10 sm:text-sm transition-colors duration-300"
-                  style={{
-                    borderColor: theme.colors.borderColor,
-                    backgroundColor: theme.colors.inputAutofillBg,
-                    color: theme.colors.primaryText
-                  }}
-                  placeholder="Email address"
-                />
-              </div>
-              <div>
-                <label htmlFor="password" className="sr-only">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none rounded-md relative block w-full px-3 py-2 border focus:outline-none focus:z-10 sm:text-sm transition-colors duration-300"
-                  style={{
-                    borderColor: theme.colors.borderColor,
-                    backgroundColor: theme.colors.inputAutofillBg,
-                    color: theme.colors.primaryText
-                  }}
-                  placeholder="Password"
-                />
-              </div>
-              
-              {isSignUp && (
-                <div>
-                  <label htmlFor="role" className="sr-only">
-                    Role
-                  </label>
-                  <select
-                    id="role"
-                    name="role"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value as 'Investor' | 'Founder' | 'Connector')}
-                    className="appearance-none rounded-md relative block w-full px-3 py-2 border focus:outline-none focus:z-10 sm:text-sm transition-colors duration-300"
-                    style={{
-                      borderColor: theme.colors.borderColor,
-                      backgroundColor: theme.colors.inputAutofillBg,
-                      color: theme.colors.primaryText
-                    }}
-                  >
-                    <option value="Investor">Investor</option>
-                    <option value="Founder">Founder</option>
-                    <option value="Connector">Deal-Maker</option>
-                  </select>
-                </div>
-              )}
+          
+          {error && (
+            <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-md">
+              {error}
             </div>
-
-            {error && (
-              <div className="text-sm text-center transition-colors duration-300" style={{ color: '#ef4444' }}>
-                {error}
-              </div>
-            )}
-
-            <div>
-                          <button
+          )}
+          
+          <div>
+            <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#1DC071] hover:bg-[#17a65d] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1DC071] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              style={{
+                backgroundColor: theme.colors.accentButtonBg,
+                color: theme.colors.accentButtonText
+              }}
             >
-              {loading ? 'Loading...' : (isSignUp ? 'Sign up' : 'Sign in')}
-            </button>
-            </div>
-          </form>
-
-          <div className="text-center">
-            <button
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-sm transition-colors duration-300 hover:opacity-80"
-              style={{ color: theme.colors.accentButtonBg }}
-            >
-              {isSignUp 
-                ? 'Already have an account? Sign in' 
-                : "Don't have an account? Sign up"
-              }
+              {loading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Sign In')}
             </button>
           </div>
+        </form>
+        
+        <div className="text-center">
+          <button
+            onClick={() => setIsSignUp(!isSignUp)}
+            className="text-sm" 
+            style={{ color: theme.colors.accentButtonBg }}
+          >
+            {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
+          </button>
+        </div>
+        
+        <div className="text-center">
+          <button 
+            onClick={() => window.history.back()}
+            className="text-sm" 
+            style={{ color: theme.colors.accentButtonBg }}
+          >
+            ← Back to previous page
+          </button>
         </div>
       </div>
     </div>
