@@ -1,0 +1,9 @@
+import React, { useState, useEffect } from "react";
+import { useTheme } from "../context/ThemeProvider";
+import { SearchIcon } from "../icons/SearchIcon";
+import { Helmet } from "react-helmet-async";
+// Temporarily commented out to fix import errors
+// import { NFT } from "thirdweb";
+// import { getContractMetadata } from "thirdweb/extensions/common";
+// import { getNFTs, totalSupply } from "thirdweb/extensions/erc721";
+// import { useReadContract } from "thirdweb/react";
