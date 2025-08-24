@@ -3,6 +3,7 @@ import { useTheme } from "../context/ThemeProvider";
 import { SearchIcon } from "../icons/SearchIcon";
 import { FaFilter } from 'react-icons/fa';
 import { FaSun, FaMoon } from 'react-icons/fa';
+import { logo } from '../assets';
 
 interface FilterMenuProps {
   isOpen: boolean;
@@ -114,9 +115,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         <div className="flex justify-between items-center px-6 py-4">
           {/* Metatron Logo */}
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#1DC071] to-[#17a65d] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">M</span>
-            </div>
+            <img src={logo} alt="Metatron Logo" className="w-12 h-12" />
             <span className="text-2xl font-bold text-[#17a65d]">metatron</span>
           </div>
           

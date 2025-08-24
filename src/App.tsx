@@ -6,6 +6,7 @@ import ProfilePage from './pages/ProfilePage';
 import Login from './components/Login';
 import ConnectorsPage from './pages/ConnectorsPage';
 import InvestorsPage from './pages/InvestorsPage';
+import VotingPage from './pages/VotingPage';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('landingpage');
@@ -22,11 +23,13 @@ function App() {
       case 'startups':
         return <Dashboard onNavigate={handleNavigate} />;
       case 'connectors':
-        return <ConnectorsPage />;
+        return <ConnectorsPage onNavigate={handleNavigate} />;
       case 'investors':
-        return <InvestorsPage />;
+        return <InvestorsPage onNavigate={handleNavigate} />;
       case 'profile':
-        return <ProfilePage />;
+        return <ProfilePage onNavigate={handleNavigate} />;
+      case 'voting':
+        return <VotingPage onNavigate={handleNavigate} />;
       case 'login':
         return <Login onNavigate={handleNavigate} />;
       default:
