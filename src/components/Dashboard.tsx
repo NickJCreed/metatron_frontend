@@ -152,10 +152,34 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                   backgroundColor: theme.colors.accentButtonBg,
                   color: theme.colors.accentButtonText
                 }}
-                onClick={() => onNavigate('dashboard')}
+                onClick={() => onNavigate('startups')}
               >
-                <span className="text-xl">📊</span>
-                <span className="font-medium">Dashboard</span>
+                <span className="text-xl">🚀</span>
+                <span className="font-medium">Startups</span>
+              </button>
+              
+              <button
+                className="w-full text-left px-4 py-3 rounded-lg transition-colors duration-300 hover:scale-105 flex items-center space-x-3"
+                style={{
+                  backgroundColor: theme.colors.secondaryButtonBg,
+                  color: theme.colors.primaryText
+                }}
+                onClick={() => onNavigate('connectors')}
+              >
+                <span className="text-xl">🤝</span>
+                <span className="font-medium">Deal-makers</span>
+              </button>
+              
+              <button
+                className="w-full text-left px-4 py-3 rounded-lg transition-colors duration-300 hover:scale-105 flex items-center space-x-3"
+                style={{
+                  backgroundColor: theme.colors.secondaryButtonBg,
+                  color: theme.colors.primaryText
+                }}
+                onClick={() => onNavigate('investors')}
+              >
+                <span className="text-xl">💰</span>
+                <span className="font-medium">Investors</span>
               </button>
               
               <button
@@ -188,34 +212,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                   backgroundColor: theme.colors.secondaryButtonBg,
                   color: theme.colors.primaryText
                 }}
-                onClick={() => onNavigate('connectors')}
-              >
-                <span className="text-xl">🤝</span>
-                <span className="font-medium">Connectors</span>
-              </button>
-              
-              <button
-                className="w-full text-left px-4 py-3 rounded-lg transition-colors duration-300 hover:scale-105 flex items-center space-x-3"
-                style={{
-                  backgroundColor: theme.colors.secondaryButtonBg,
-                  color: theme.colors.primaryText
-                }}
                 onClick={() => onNavigate('landingpage')}
               >
-                <span className="text-xl">🏠</span>
-                <span className="font-medium">Landing Page</span>
-              </button>
-              
-              <button
-                className="w-full text-left px-4 py-3 rounded-lg transition-colors duration-300 hover:scale-105 flex items-center space-x-3"
-                style={{
-                  backgroundColor: theme.colors.secondaryButtonBg,
-                  color: theme.colors.primaryText
-                }}
-                onClick={() => onNavigate('login')}
-              >
-                <span className="text-xl">🔐</span>
-                <span className="font-medium">Login</span>
+                <span className="text-xl">🚪</span>
+                <span className="font-medium">Logout</span>
               </button>
             </div>
             
@@ -242,7 +242,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
             {/* Header */}
             <div className="mb-12 text-center">
               <h1 className="text-5xl font-bold mb-4 transition-colors duration-300" style={{ color: theme.colors.primaryText }}>
-                🚀 metatron Dashboard
+                🚀 metatron Startups
               </h1>
               <p className="text-xl max-w-2xl mx-auto transition-colors duration-300" style={{ color: theme.colors.secondaryText }}>
                 Discover innovative startups and connect with deal-makers

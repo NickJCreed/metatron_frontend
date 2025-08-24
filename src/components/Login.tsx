@@ -49,21 +49,21 @@ const Login: React.FC<LoginProps> = ({ onNavigate }) => {
         });
         
         console.log('Successfully signed up');
-        setError('Account created successfully! Redirecting to dashboard...');
+        setError('Account created successfully! Redirecting to startups...');
         
-        // Redirect to dashboard after successful signup
+        // Redirect to startups after successful signup
         setTimeout(() => {
-          onNavigate('dashboard');
+          onNavigate('startups');
         }, 2000);
       } else {
         // Sign in
         await signInWithEmailAndPassword(auth, email, password);
         console.log('Successfully signed in');
-        setError('Sign in successful! Redirecting to dashboard...');
+        setError('Sign in successful! Redirecting to startups...');
         
-        // Redirect to dashboard after successful signin
+        // Redirect to startups after successful signin
         setTimeout(() => {
-          onNavigate('dashboard');
+          onNavigate('startups');
         }, 2000);
       }
     } catch (error: any) {
@@ -101,11 +101,11 @@ const Login: React.FC<LoginProps> = ({ onNavigate }) => {
       }
       
       console.log('Successfully signed in with', providerName);
-      setError(`Successfully signed in with ${providerName}! Redirecting to dashboard...`);
+      setError(`Successfully signed in with ${providerName}! Redirecting to startups...`);
       
-      // Redirect to dashboard after successful social login
+      // Redirect to startups after successful social login
       setTimeout(() => {
-        onNavigate('dashboard');
+        onNavigate('startups');
       }, 2000);
     } catch (error: any) {
       console.error('Social login error:', error);

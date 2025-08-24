@@ -4,6 +4,8 @@ import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
 import ProfilePage from './pages/ProfilePage';
 import Login from './components/Login';
+import ConnectorsPage from './pages/ConnectorsPage';
+import InvestorsPage from './pages/InvestorsPage';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('landingpage');
@@ -17,8 +19,12 @@ function App() {
     switch(currentPage) {
       case 'landingpage':
         return <LandingPage onNavigate={handleNavigate} />;
-      case 'dashboard':
+      case 'startups':
         return <Dashboard onNavigate={handleNavigate} />;
+      case 'connectors':
+        return <ConnectorsPage />;
+      case 'investors':
+        return <InvestorsPage />;
       case 'profile':
         return <ProfilePage />;
       case 'login':
@@ -36,8 +42,8 @@ function App() {
   return (
     <ThemeProvider>
       <div>
-        {/* Navigation Bar - Only show when not on landingpage AND not on login */}
-        {currentPage !== 'landingpage' && currentPage !== 'login' && (
+        {/* Navigation Bar - Only show when not on landingpage, login, or startups */}
+        {currentPage !== 'landingpage' && currentPage !== 'login' && currentPage !== 'startups' && (
           <div style={{
             padding: '20px', 
             backgroundColor: '#333', 
@@ -61,17 +67,17 @@ function App() {
               🏠 Landing Page
             </button>
             <button 
-              onClick={() => setCurrentPage('dashboard')}
+              onClick={() => setCurrentPage('startups')}
               style={{
                 padding: '10px 20px',
-                backgroundColor: currentPage === 'dashboard' ? '#007bff' : '#666',
+                backgroundColor: currentPage === 'startups' ? '#007bff' : '#666',
                 color: 'white',
                 border: 'none',
                 borderRadius: '5px',
                 cursor: 'pointer'
               }}
             >
-              📊 Dashboard
+              🚀 Startups
             </button>
             <button 
               onClick={() => setCurrentPage('profile')}
