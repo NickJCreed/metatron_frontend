@@ -13,11 +13,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
     <div className={`min-h-screen transition-colors duration-300 ${
       theme.type === 'dark' 
         ? 'bg-gradient-to-br from-gray-900 to-gray-800' 
-        : 'bg-gradient-to-br from-gray-300 to-gray-400'
+        : 'bg-gradient-to-br from-gray-100 to-gray-200'
     }`}>
       {/* Header */}
       <header className="flex items-center justify-between p-6">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center" style={{ gap: '11px' }}>
           <img src={logo} alt="metatron Logo" className="h-12 w-12" />
           <span className="text-2xl font-bold text-[#17a65d]">metatron</span>
         </div>

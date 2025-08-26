@@ -111,10 +111,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
   return (
     <div className="min-h-screen transition-colors duration-300" style={{ backgroundColor: theme.colors.secondaryBg }}>
       {/* Header with Logo and Theme Toggle */}
-      <div className="fixed top-0 left-0 right-0 z-50" style={{ backgroundColor: theme.colors.modalBg, borderBottom: `1px solid ${theme.colors.borderColor}` }}>
+      <div className="fixed top-0 left-0 right-0 z-50" style={{ backgroundColor: theme.colors.modalBg }}>
         <div className="flex justify-between items-center px-6 py-4">
           {/* Metatron Logo */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center" style={{ gap: '11px' }}>
             <img src={logo} alt="Metatron Logo" className="w-12 h-12" />
             <span className="text-2xl font-bold text-[#17a65d]">metatron</span>
           </div>
@@ -132,17 +132,16 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
             {theme.type === 'dark' ? '☀️' : '🌙'}
           </button>
         </div>
+        {/* Extended border line across full header width */}
+        <div className="absolute left-0 right-0 h-px" style={{ backgroundColor: theme.colors.borderColor, bottom: '1px' }}></div>
       </div>
+
 
       {/* Main Layout with Sidebar and Content */}
       <div className="flex pt-24">
         {/* Left Sidebar Navigation */}
-        <div className="fixed left-0 top-24 w-64 h-screen z-40" style={{ backgroundColor: theme.colors.modalBg, borderRight: `1px solid ${theme.colors.borderColor}` }}>
-          <div className="p-6">
-            <h2 className="text-lg font-semibold mb-6" style={{ color: theme.colors.primaryText }}>
-              Navigation
-            </h2>
-            
+        <div className="fixed left-0 top-0 h-screen z-30" style={{ backgroundColor: theme.colors.modalBg, width: '196px' }}>
+          <div className="p-6" style={{ marginTop: '88px' }}>
             {/* Navigation Buttons */}
             <div className="space-y-3">
               <button
@@ -153,7 +152,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                 }}
                 onClick={() => onNavigate('startups')}
               >
-                <span className="text-xl">🚀</span>
                 <span className="font-medium">Startups</span>
               </button>
               
@@ -165,7 +163,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                 }}
                 onClick={() => onNavigate('connectors')}
               >
-                <span className="text-xl">🤝</span>
                 <span className="font-medium">Deal-makers</span>
               </button>
               
@@ -177,7 +174,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                 }}
                 onClick={() => onNavigate('investors')}
               >
-                <span className="text-xl">💰</span>
                 <span className="font-medium">Investors</span>
               </button>
               
@@ -189,7 +185,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                 }}
                 onClick={() => onNavigate('profile')}
               >
-                <span className="text-xl">👤</span>
                 <span className="font-medium">Profile</span>
               </button>
               
@@ -201,7 +196,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                 }}
                 onClick={() => onNavigate('voting')}
               >
-                <span className="text-xl">🗳️</span>
                 <span className="font-medium">Voting</span>
               </button>
               
@@ -213,7 +207,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                 }}
                 onClick={() => onNavigate('landingpage')}
               >
-                <span className="text-xl">🚪</span>
                 <span className="font-medium">Logout</span>
               </button>
             </div>
@@ -236,7 +229,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         </div>
 
         {/* Main Content Area */}
-        <div className="ml-64 flex-1">
+        <div className="flex-1" style={{ marginLeft: '196px' }}>
           <div className="z-20 mx-auto flex min-h-screen w-full flex-col px-6 pt-8 pb-8">
             {/* Header */}
             <div className="mb-12 text-center">

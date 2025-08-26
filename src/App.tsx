@@ -45,71 +45,7 @@ function App() {
   return (
     <ThemeProvider>
       <div>
-        {/* Navigation Bar - Only show when not on landingpage, login, or startups */}
-        {currentPage !== 'landingpage' && currentPage !== 'login' && currentPage !== 'startups' && (
-          <div style={{
-            padding: '20px', 
-            backgroundColor: '#333', 
-            color: 'white',
-            display: 'flex',
-            gap: '20px',
-            alignItems: 'center'
-          }}>
-            <h2 style={{margin: 0}}>Metatron App</h2>
-            <button 
-              onClick={() => setCurrentPage('landingpage')}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: currentPage === 'landingpage' ? '#007bff' : '#666',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer'
-              }}
-            >
-              🏠 Landing Page
-            </button>
-            <button 
-              onClick={() => setCurrentPage('startups')}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: currentPage === 'startups' ? '#007bff' : '#666',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer'
-              }}
-            >
-              🚀 Startups
-            </button>
-            <button 
-              onClick={() => setCurrentPage('profile')}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: currentPage === 'profile' ? '#007bff' : '#666',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer'
-              }}
-            >
-              👤 Profile
-            </button>
-            <button 
-              onClick={() => setCurrentPage('login')}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: currentPage === 'login' ? '#007bff' : '#666',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer'
-              }}
-            >
-              🔐 Login
-            </button>
-          </div>
-        )}
+        {/* Navigation Bar - Disabled for all pages since each page has its own navigation */}
         
         {/* Page Content */}
         {renderPage()}
