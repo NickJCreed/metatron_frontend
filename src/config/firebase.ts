@@ -3,6 +3,24 @@ import { getAuth, initializeAuth, browserLocalPersistence, getIdToken } from "fi
 import { getFirestore } from "firebase/firestore";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 
+// Validate Firebase environment variables
+const requiredEnvVars = [
+  'VITE_FIREBASE_API_KEY',
+  'VITE_FIREBASE_AUTH_DOMAIN', 
+  'VITE_FIREBASE_PROJECT_ID',
+  'VITE_FIREBASE_STORAGE_BUCKET',
+  'VITE_FIREBASE_MESSAGING_SENDER_ID',
+  'VITE_FIREBASE_APP_ID'
+];
+
+const missingVars = requiredEnvVars.filter(varName => !import.meta.env[varName]);
+
+if (missingVars.length > 0) {
+  const errorMessage = `Missing Firebase environment variables: ${missingVars.join(', ')}. Please create a .env file with your Firebase configuration.`;
+  console.error(errorMessage);
+  throw new Error(errorMessage);
+}
+
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -12,7 +30,7 @@ const firebaseConfig = {
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-console.log("Firebase Config:", firebaseConfig);
+console.log("Firebase Config initialized successfully");
 
 const app = initializeApp(firebaseConfig);
 
@@ -20,9 +38,16 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // Initialize Firebase Authentication with persistence
-const auth = initializeAuth(app, {
-  persistence: browserLocalPersistence,
-});
+let auth;
+try {
+  // Try to get existing auth instance first
+  auth = getAuth(app);
+} catch (error) {
+  // If getAuth fails, initialize auth with persistence
+  auth = initializeAuth(app, {
+    persistence: browserLocalPersistence,
+  });
+}
 
 // Initialize Firebase Functions
 const functions = getFunctions(app);

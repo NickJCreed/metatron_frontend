@@ -78,6 +78,11 @@ const Login: React.FC<LoginProps> = ({ onNavigate }) => {
     try {
       setLoading(true);
       setError('');
+      
+      // Check if Firebase is properly configured
+      if (!auth) {
+        throw new Error('Firebase authentication is not properly configured. Please check your environment variables.');
+      }
       const result = await signInWithPopup(auth, provider);
       
       // Save user data to Firestore
@@ -109,16 +114,44 @@ const Login: React.FC<LoginProps> = ({ onNavigate }) => {
       }, 2000);
     } catch (error: any) {
       console.error('Social login error:', error);
-      setError(error.message);
+      
+      // Provide more helpful error messages
+      let errorMessage = error.message;
+      if (error.code === 'auth/argument-error') {
+        errorMessage = 'Firebase configuration error. Please ensure all Firebase environment variables are set correctly.';
+      } else if (error.code === 'auth/popup-blocked') {
+        errorMessage = 'Popup was blocked by your browser. Please allow popups for this site.';
+      } else if (error.code === 'auth/popup-closed-by-user') {
+        errorMessage = 'Sign-in was cancelled. Please try again.';
+      } else if (error.code === 'auth/account-exists-with-different-credential') {
+        errorMessage = 'An account already exists with the same email address but different sign-in credentials. Please use your original sign-in method.';
+      } else if (error.code === 'auth/auth-domain-config-required') {
+        errorMessage = 'Firebase Auth domain configuration is required. Please check your Firebase setup.';
+      } else if (error.code === 'auth/cancelled-popup-request') {
+        errorMessage = 'Only one popup request is allowed at a time.';
+      } else if (error.code === 'auth/operation-not-allowed') {
+        errorMessage = `${providerName} sign-in is not enabled. Please contact support.`;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
+  // Configure auth providers
   const googleProvider = new GoogleAuthProvider();
+  googleProvider.addScope('email');
+  googleProvider.addScope('profile');
+  
   const facebookProvider = new FacebookAuthProvider();
+  facebookProvider.addScope('email');
+  facebookProvider.addScope('public_profile');
+  
   const twitterProvider = new TwitterAuthProvider();
+  
   const githubProvider = new GithubAuthProvider();
+  githubProvider.addScope('user:email');
 
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: theme.colors.secondaryBg }}>
